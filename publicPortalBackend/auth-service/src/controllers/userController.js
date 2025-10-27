@@ -1,5 +1,4 @@
-import { get } from "mongoose";
-import { getAllUsers, getUserByID } from "../services/userService";
+import { getAllUsers, getUserByID } from "../services/userService.js";
 
 
 export const handleGetAllUsers = async (req, res) => {
