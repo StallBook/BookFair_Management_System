@@ -4,6 +4,8 @@ export const handleSignUp = async (req, res) => {
     try {
         const { name, email, password } = req.body;
         const user = await signUp(name, email, password);
+
+        console.log("User created successfully", user);
         res.status(201).json(user);
     }
     catch (err) {
