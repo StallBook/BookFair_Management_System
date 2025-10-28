@@ -1,0 +1,27 @@
+{
+  "name": "stall-service",
+  "version": "1.0.0",
+  "description": "This is stall management service of bookfair management system",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StallBook/BookFair_Management_System.git"
+  },
+  "author": "Imash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StallBook/BookFair_Management_System/issues"
+  },
+  "homepage": "https://github.com/StallBook/BookFair_Management_System#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2",
+    "nodemon": "^3.1.10"
+  }
+}
