@@ -1,62 +1,52 @@
 const mongoose = require("mongoose");
 
-const StallSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    index: true,
-  },
-  size: {
-    type: String,
-    required: true,
-    enum: ["small", "medium", "large"],
-  },
-  dimenstions: {
-    width: {
-      type: Number,
+const StallSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
       required: true,
+      index: true,
+      unique: true,
+      trim: true,
     },
-    length: {
-      type: Number,
+    size: {
+      type: String,
       required: true,
+      enum: ["small", "medium", "large"],
     },
+    dimensions: { 
+      width: {
+        type: Number,
+        required: true,
+        min: 1,
+      },
+      length: {
+        type: Number,
+        required: true,
+        min: 1,
+      },
+    },
+    map: {
+      x: { type: Number, required: true },
+      y: { type: Number, required: true },
+      w: { type: Number, required: true },
+      h: { type: Number, required: true },
+    },
+    status: {
+      type: String,
+      enum: ["available", "blocked", "reserved"],
+      default: "available",
+    },
+    reservedByReservationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Reservation",
+      default: null,
+    },
+    reservedAt: { type: Date, default: null },
   },
-  map: {
-    x: {
-      type: Number,
-      required: true,
-    },
-    y: {
-      type: Number,
-      required: true,
-    },
-    w: {
-      type: Number,
-      required: true,
-    },
-    h: {
-      type: Number,
-      required: true,
-    },
-  },
-  status: {
-    type: String,
-    required: true,
-    enum: ["available", "blocked", "reserved"],
-    default: "available",
-  },
-  reservedByReservationId: { type: String, default: null },
-  reservetAt: { type: Date, default: null },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: { type: Date, default: Date.now },
-});
-
-StallSchema.pre("save", function (next) {
-  this.updatedAt = Date.now();
-  next();
-});
+  {
+    timestamps: true, 
+  }
+);
 
 module.exports = mongoose.model("Stall", StallSchema);
