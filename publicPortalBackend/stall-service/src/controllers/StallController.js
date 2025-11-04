@@ -1,4 +1,3 @@
-const { request } = require("express");
 const Stall = require("../models/Stall");
 
 const getAllStalls = async (request, response) => {
@@ -61,7 +60,7 @@ const updateStallStatus = async (request, response) => {
     if (!stall) {
       return response.status(404).json({ message: "Stall not found" });
     }
-   if (stall.status === "reserved" && status === "reserved") {
+    if (stall.status === "reserved" && status === "reserved") {
       return response.status(400).json({ message: "Stall already reserved" });
     }
 
@@ -73,35 +72,35 @@ const updateStallStatus = async (request, response) => {
       .status(200)
       .json({ message: "Stall status updated successfully", data: stall });
   } catch (error) {
-    console.log("Error updating stall status:", error);
     response.status(500).json("Internal server error");
   }
 };
 
-const getStallForUser = async (request,response) =>{ 
-  try{
-    const {userId} = request.body;
-    console.log("Request body:", request.body);
+const getStallForUser = async (request, response) => {
+  try {
+    const { userId } = request.body;
 
-    if(!userId){
-      return response.status(400).json({message: "User ID is required"})
+    if (!userId) {
+      return response.status(400).json({ message: "User ID is required" });
     }
-    const stall = await Stall.find({userId:userId,status:"reserved"});
-    if(!stall.length){
-      return response.status(404).json({message:"No stall found for this userID"}); 
+    const stall = await Stall.find({ userId: userId, status: "reserved" });
+    if (!stall.length) {
+      return response
+        .status(404)
+        .json({ message: "No stall found for this userID" });
     }
-response.status(200).json({message:"Stall fetched successfully",data:stall});
-   
-  } catch(error){
-    console.log("e",error)
-    response.status(500).json({message:"Internal server error"});
+    response
+      .status(200)
+      .json({ message: "Stall fetched successfully", data: stall });
+  } catch (error) {
+    response.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 module.exports = {
   getAllStalls,
   getAllStallsAvailable,
   getStallByName,
   updateStallStatus,
-  getStallForUser
+  getStallForUser,
 };
