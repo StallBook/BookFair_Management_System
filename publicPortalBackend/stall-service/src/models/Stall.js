@@ -34,7 +34,7 @@ const StallSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["available", "blocked", "reserved"],
+      enum: ["available", "cancelled", "reserved"],
       default: "available",
     },
     reservedByReservationId: {
