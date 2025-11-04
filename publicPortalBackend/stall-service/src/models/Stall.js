@@ -37,9 +37,8 @@ const StallSchema = new mongoose.Schema(
       enum: ["available", "cancelled", "reserved"],
       default: "available",
     },
-    reservedByReservationId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Reservation",
+    userId: {
+      type: Number,
       default: null,
     },
     reservedAt: { type: Date, default: null },

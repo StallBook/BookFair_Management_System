@@ -1,3 +1,4 @@
+const { request } = require("express");
 const Stall = require("../models/Stall");
 
 const getAllStalls = async (request, response) => {
@@ -54,7 +55,7 @@ const getStallByName = async (request, response) => {
 
 const updateStallStatus = async (request, response) => {
   try {
-    const { name, status } = request.body;
+    const { name, status, userId } = request.body;
 
     const stall = await Stall.findOne({ name: name });
     if (!stall) {
@@ -63,7 +64,10 @@ const updateStallStatus = async (request, response) => {
    if (stall.status === "reserved" && status === "reserved") {
       return response.status(400).json({ message: "Stall already reserved" });
     }
+
     stall.status = status;
+    stall.userId = status === "reserved" ? userId : null;
+
     await stall.save();
     return response
       .status(200)
@@ -74,9 +78,30 @@ const updateStallStatus = async (request, response) => {
   }
 };
 
+const getStallForUser = async (request,response) =>{ 
+  try{
+    const {userId} = request.body;
+    console.log("Request body:", request.body);
+
+    if(!userId){
+      return response.status(400).json({message: "User ID is required"})
+    }
+    const stall = await Stall.find({userId:userId,status:"reserved"});
+    if(!stall.length){
+      return response.status(404).json({message:"No stall found for this userID"}); 
+    }
+response.status(200).json({message:"Stall fetched successfully",data:stall});
+   
+  } catch(error){
+    console.log("e",error)
+    response.status(500).json({message:"Internal server error"});
+  }
+}
+
 module.exports = {
   getAllStalls,
   getAllStallsAvailable,
   getStallByName,
-  updateStallStatus
+  updateStallStatus,
+  getStallForUser
 };
