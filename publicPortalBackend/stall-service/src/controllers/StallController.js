@@ -64,6 +64,18 @@ const updateStallStatus = async (request, response) => {
       return response.status(400).json({ message: "Stall already reserved" });
     }
 
+    if (status === "reserved" && userId) {
+      const reservedCount = await Stall.countDocuments({ userId, status });
+      if (reservedCount >= 3) {
+        return response
+          .status(400)
+          .json({
+            message:
+              "You have reached the limit. Each user can reserve a maximum of 3 stalls.",
+          });
+      }
+    }
+
     stall.status = status;
     stall.userId = status === "reserved" ? userId : null;
 
