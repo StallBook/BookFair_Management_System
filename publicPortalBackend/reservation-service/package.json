@@ -1,7 +1,7 @@
 {
-  "name": "stall-service",
+  "name": "reservation-service",
   "version": "1.0.0",
-  "description": "This is stall management service of bookfair management system",
+  "description": "This is reservation service of BookFair_Management_System",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -12,17 +12,14 @@
     "type": "git",
     "url": "git+https://github.com/StallBook/BookFair_Management_System.git"
   },
-  "author": "Imasha",
+  "author": "Imasha Nawodi",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/StallBook/BookFair_Management_System/issues"
-  },
-  "homepage": "https://github.com/StallBook/BookFair_Management_System#readme",
   "dependencies": {
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "mongoose": "^8.19.2",
+    "mongoose": "^8.19.3",
     "nodemon": "^3.1.10"
   }
 }

@@ -54,23 +54,49 @@ const getStallByName = async (request, response) => {
 
 const updateStallStatus = async (request, response) => {
   try {
-    const { name, status } = request.body;
+    const { names, status, userId } = request.body;
 
-    const stall = await Stall.findOne({ name: name });
-    if (!stall) {
+    const stalls = await Stall.find({ name: { $in: names } });
+
+    if (!stalls.length) {
       return response.status(404).json({ message: "Stall not found" });
     }
-   if (stall.status === "reserved" && status === "reserved") {
-      return response.status(400).json({ message: "Stall already reserved" });
-    }
-    stall.status = status;
-    await stall.save();
-    return response
-      .status(200)
-      .json({ message: "Stall status updated successfully", data: stall });
+
+    stalls.forEach((stall) => {
+      stall.status = status;
+      stall.userId = status === "reserved" ? userId : null;
+    });
+
+    await Stall.bulkSave(stalls);
+
+    return response.status(200).json({
+      message: "Stall status updated successfully",
+      data: stalls,
+    });
   } catch (error) {
-    console.log("Error updating stall status:", error);
-    response.status(500).json("Internal server error");
+    console.error("Error updating stall status:", error);
+    return response.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getStallForUser = async (request, response) => {
+  try {
+    const { userId } = request.body;
+
+    if (!userId) {
+      return response.status(400).json({ message: "User ID is required" });
+    }
+    const stall = await Stall.find({ userId: userId, status: "reserved" });
+    if (!stall.length) {
+      return response
+        .status(404)
+        .json({ message: "No stall found for this userID" });
+    }
+    response
+      .status(200)
+      .json({ message: "Stall fetched successfully", data: stall });
+  } catch (error) {
+    response.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -78,5 +104,6 @@ module.exports = {
   getAllStalls,
   getAllStallsAvailable,
   getStallByName,
-  updateStallStatus
+  updateStallStatus,
+  getStallForUser,
 };
