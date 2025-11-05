@@ -82,22 +82,20 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
             {/* Mobile Menu */}
             {open && (
                 <div className="absolute top-full left-0 w-full bg-gray-800 flex flex-col items-center py-5 space-y-4 md:hidden z-10">
-                    <a className="hover:text-teal-400 hover:underline" href="/">Home</a>
-                    <a className="hover:text-teal-400 hover:underline" href="/services">Services</a>
-                    <a className="hover:text-teal-400 hover:underline" href="/project">Project</a>
-                    <a className="hover:text-teal-400 hover:underline" href="/about-us">About us</a>
+                    <a className="hover:text-blue-400 hover:underline" href="/">Home</a>
+                    {/* <a className="hover:text-teal-400 hover:underline" href="/services">Services</a> */}
+                    {/* <a className="hover:text-teal-400 hover:underline" href="/project">Project</a> */}
+                    <a className="hover:text-blue-400 hover:underline" href="/about-us">About us</a>
                     <a
-                        className="rounded-xl p-3 bg-teal-500 hover:bg-white hover:text-teal-500 transition"
+                        className="rounded-xl p-3 bg-blue-500 hover:bg-white hover:text-teal-500 transition"
                         href="/started"
                     >
-                        Get Started
-                    </a>
+                        Book Now                    </a>
                     <a
                         className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
                         href="/talk"
                     >
-                        Let's Talk
-                    </a>
+                        Sign Up                    </a>
                 </div>
             )}
         </nav>
