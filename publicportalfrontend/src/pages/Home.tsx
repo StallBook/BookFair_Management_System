@@ -168,7 +168,7 @@ const Home = () => {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    style={{ backgroundColor: "oklch(94.8% 0.028 342.258)" }}
+                    style={{ backgroundColor: "oklch(95.3% 0.051 180.801)" }}
 
                 >
                     <h2 className="text-xl font-semibold mb-2">
