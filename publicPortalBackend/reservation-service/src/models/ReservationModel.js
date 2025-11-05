@@ -5,7 +5,6 @@ const reservationSchema = new mongoose.Schema(
     reservationId: {
       type: String,
       unique: true,
-      required: true,
     },
     userId: {
       type: Number,
@@ -19,8 +18,8 @@ const reservationSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      enum: ["available", "cancelled", "reserved"],
-      default: "available",
+      enum: ["reserved"],
+      default: "reserved",
     },
     reservationDate: {
       type: Date,

@@ -2,11 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
-
+const reservationRoutes = require("./src/routes/reservationRoute");
 const PORT = process.env.PORT || 5003;
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use("/reserve", reservationRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URI_RESERVATION_SERVICE)
