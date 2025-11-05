@@ -57,25 +57,25 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
             {/* Desktop Links */}
             <div className="hidden md:flex space-x-6">
-                <a className="hover:text-teal-400 hover:underline" href="/">Home</a>
-                <a className="hover:text-teal-400 hover:underline" href="/services">Services</a>
-                <a className="hover:text-teal-400 hover:underline" href="/project">Project</a>
-                <a className="hover:text-teal-400 hover:underline" href="/about-us">About us</a>
+                <a className="hover:text-blue-400 hover:underline" href="/">Home</a>
+                {/* <a className="hover:text-teal-400 hover:underline" href="/services">Services</a> */}
+                {/* <a className="hover:text-teal-400 hover:underline" href="/project">Project</a> */}
+                <a className="hover:text-blue-400 hover:underline" href="/about-us">About us</a>
             </div>
 
             {/* Desktop Buttons */}
             <div className="hidden md:flex space-x-4">
                 <a
-                    className="rounded-xl p-3 bg-teal-500 hover:bg-white hover:text-teal-500 transition"
+                    className="rounded-xl p-3 bg-blue-400 hover:bg-white hover:text-blue-500 transition"
                     href="/started"
                 >
-                    Get Started
+                    Book Now
                 </a>
                 <a
                     className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
                     href="/talk"
                 >
-                    Let's Talk
+                    Sign Up
                 </a>
             </div>
 
