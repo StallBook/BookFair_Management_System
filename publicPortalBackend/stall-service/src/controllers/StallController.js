@@ -54,37 +54,28 @@ const getStallByName = async (request, response) => {
 
 const updateStallStatus = async (request, response) => {
   try {
-    const { name, status, userId } = request.body;
+    const { names, status, userId } = request.body;
 
-    const stall = await Stall.findOne({ name: name });
-    if (!stall) {
+    const stalls = await Stall.find({ name: { $in: names } });
+
+    if (!stalls.length) {
       return response.status(404).json({ message: "Stall not found" });
     }
-    if (stall.status === "reserved" && status === "reserved") {
-      return response.status(400).json({ message: "Stall already reserved" });
-    }
 
-    if (status === "reserved" && userId) {
-      const reservedCount = await Stall.countDocuments({ userId, status });
-      if (reservedCount >= 3) {
-        return response
-          .status(400)
-          .json({
-            message:
-              "You have reached the limit. Each user can reserve a maximum of 3 stalls.",
-          });
-      }
-    }
+    stalls.forEach((stall) => {
+      stall.status = status;
+      stall.userId = status === "reserved" ? userId : null;
+    });
 
-    stall.status = status;
-    stall.userId = status === "reserved" ? userId : null;
+    await Stall.bulkSave(stalls);
 
-    await stall.save();
-    return response
-      .status(200)
-      .json({ message: "Stall status updated successfully", data: stall });
+    return response.status(200).json({
+      message: "Stall status updated successfully",
+      data: stalls,
+    });
   } catch (error) {
-    response.status(500).json("Internal server error");
+    console.error("Error updating stall status:", error);
+    return response.status(500).json({ message: "Internal server error" });
   }
 };
 
