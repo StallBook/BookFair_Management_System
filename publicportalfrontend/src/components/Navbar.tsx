@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import logo from "../assets/lg.png";
 
 interface NavbarProps {
     className?: string; // allow optional className
@@ -8,11 +9,11 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
     const [open, setOpen] = useState(false);
 
     return (
-        <nav className={`px-5 pt-2 flex justify-between md:justify-around items-center relative shadow pb-4 bg-gray-800 text-white ${className}`}>
+        <nav className={`px-5 pt-2 flex justify-between md:justify-around items-center relative shadow pb-2 bg-gray-800 text-white ${className}`}>
             {/* Logo */}
             <img
-                className="w-10"
-                src="https://upload.wikimedia.org/wikipedia/en/thumb/b/bd/Reddit_Logo_Icon.svg/220px-Reddit_Logo_Icon.svg.png"
+                className="w-40 h-12 object-contain"
+                src={logo}
                 alt="Logo"
             />
 
