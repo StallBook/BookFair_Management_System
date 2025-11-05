@@ -14,7 +14,7 @@ const StallSchema = new mongoose.Schema(
       required: true,
       enum: ["small", "medium", "large"],
     },
-    dimensions: { 
+    dimensions: {
       width: {
         type: Number,
         required: true,
@@ -37,14 +37,10 @@ const StallSchema = new mongoose.Schema(
       enum: ["available", "cancelled", "reserved"],
       default: "available",
     },
-    userId: {
-      type: Number,
-      default: null,
-    },
     reservedAt: { type: Date, default: null },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
