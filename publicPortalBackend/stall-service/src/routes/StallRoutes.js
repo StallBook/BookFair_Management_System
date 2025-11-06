@@ -6,4 +6,5 @@ router.get("/all-stalls",StallController.getAllStalls);
 router.get("/available",StallController.getAllStallsAvailable);
 router.get("/stall-by-name",StallController.getStallByName);
 router.put("/update-status",StallController.updateStallStatus);
+router.post("/all-user-stalls",StallController.getStallForUser);
 module.exports = router;
