@@ -34,7 +34,6 @@ export async function userSignUpService(userData: SignUpPayload): Promise<any> {
 
 interface SignInPayload {
   name: string;
-  email: string;
   password: string;
 }
 
