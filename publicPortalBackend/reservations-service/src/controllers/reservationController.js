@@ -3,6 +3,7 @@ import {
     cancelReservation,
     getUserReservations,
     getAllReservations,
+    getReservationById
 } from "../services/reservationService.js";
 
 
@@ -59,5 +60,18 @@ export const listReservationsHandler = async (req, res) => {
         return res
             .status(500)
             .json({ error: err.message || "Failed to list reservations" });
+    }
+};
+
+export const getReservationByIdHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const reservation = await getReservationById(id);
+        return res.json({ reservation });
+    } catch (err) {
+        console.error("Get reservation error:", err.message || err);
+        return res
+            .status(404)
+            .json({ error: err.message || "Reservation not found" });
     }
 };
