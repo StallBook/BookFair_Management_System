@@ -1,4 +1,3 @@
-
 import Reservation from "../models/reservationModel.js";
 import axios from "axios";
 import { acquireLock, releaseLock } from "../utils/redisLock.js";
@@ -11,6 +10,7 @@ const STALL_SERVICE = process.env.STALL_SERVICE_URL || "http://localhost:5003";
 const AUTH_SERVICE = process.env.AUTH_SERVICE_URL || "http://localhost:5001";
 const JWT_SECRET = process.env.JWT_SECRET || "changeme";
 
+// verify token
 export const verifyToken = (token) => {
     try {
         return jwt.verify(token, JWT_SECRET);
@@ -19,18 +19,25 @@ export const verifyToken = (token) => {
     }
 };
 
-export const fetchUserProfile = async (token) => {
+// feltch user details
+export const fetchUserProfile = async (authHeader) => {
+    const token = authHeader.startsWith("Bearer ")
+        ? authHeader
+        : `Bearer ${authHeader}`;
+
     try {
-        const resp = await axios.get(`${AUTH_SERVICE}/auth/me`, {
+        const resp = await axios.get(`${AUTH_SERVICE}/profile`, {
             headers: { Authorization: token },
         });
-        return resp.data.user;
+
+        return resp.data?.user || null;
     } catch (err) {
-        console.error("Failed to fetch user profile:", err.message);
+        console.error("Failed to fetch user profile:", err.response?.data || err.message);
         return null;
     }
 };
 
+// Count confirmed reservations by user
 export const countConfirmedReservationsByUser = async (userId) => {
     const reservations = await Reservation.find({
         userId,
@@ -40,6 +47,7 @@ export const countConfirmedReservationsByUser = async (userId) => {
     return reservations.reduce((sum, r) => sum + (r.stalls?.length || 0), 0);
 };
 
+
 export const createReservation = async ({ authHeader, stallIds }) => {
     if (!authHeader) throw new Error("Unauthorized");
 
@@ -48,24 +56,22 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         : authHeader;
 
     const payload = verifyToken(token);
+    console.log("🔍 [DEBUG] Incoming Authorization header:", authHeader);
+    console.log("🔍 [DEBUG] Decoded JWT payload:", payload);
 
-    // Get user info from Auth-Service
-    let user = payload?.userId
-        ? await fetchUserProfile(authHeader).catch(() => null)
-        : await fetchUserProfile(authHeader);
-
-    if (!user && payload) {
-        user = {
-            id: payload.userId || payload.sub,
-            email: payload.email || "unknown@example.com",
-        };
-    }
-
+    // Fetch user profile from Auth Service
+    const user = await fetchUserProfile(authHeader);
     if (!user) throw new Error("Unauthorized");
 
-    const userId = user.id || user._id;
+    const userId = user._id || user.userID;
     const userEmail = user.email;
 
+    if (!userId) {
+        console.error("Invalid user profile received:", user);
+        throw new Error("Invalid user profile: missing userId");
+    }
+
+    // Validate stall input
     if (!stallIds || !Array.isArray(stallIds) || stallIds.length === 0)
         throw new Error("No stallIds provided");
 
@@ -93,6 +99,7 @@ export const createReservation = async ({ authHeader, stallIds }) => {
             if (stall.status === "reserved")
                 throw new Error(`Stall ${stall.name || stallId} is already reserved`);
 
+            // Acquire Redis lock
             const lockKey = `lock:stall:${stallId}`;
             const lockToken = await acquireLock(lockKey);
             if (!lockToken)
@@ -115,7 +122,7 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         });
         await reservation.save();
 
-        // Reserve each stall in Stall-Service
+        // Mark stalls as reserved in Stall-Service
         await axios.put(`${STALL_SERVICE}/stalls/update-status`, {
             names: stalls.map((s) => s.name),
             status: "reserved",
@@ -127,24 +134,25 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         reservation.qrToken = reservation._id.toString();
         await reservation.save();
 
-
+        console.log(`Reservation confirmed for user ${userEmail} (${userId})`);
         return reservation;
+
     } catch (err) {
         console.error("Reservation creation failed:", err.message);
 
-        // Rollback stall status
+        // Rollback stall status if any failure
         try {
             await axios.put(`${STALL_SERVICE}/stalls/update-status`, {
                 names: stallIds,
                 status: "available",
             });
         } catch (rollbackErr) {
-            console.error("Rollback failed:", rollbackErr.message);
+            console.error("⚠️ Rollback failed:", rollbackErr.message);
         }
 
         throw err;
     } finally {
-        // Release all Redis locks
+        // Release Redis locks
         for (const { lockKey, lockToken } of locks) {
             await releaseLock(lockKey, lockToken);
         }
@@ -158,7 +166,7 @@ export const cancelReservation = async (reservationId, authHeader) => {
     const locks = [];
 
     try {
-        // Lock all stalls
+        // Lock all stalls before cancelling
         for (const s of reservation.stalls) {
             const lockKey = `lock:stall:${s.stallId}`;
             const lockToken = await acquireLock(lockKey);
@@ -167,7 +175,7 @@ export const cancelReservation = async (reservationId, authHeader) => {
             locks.push({ lockKey, lockToken });
         }
 
-        // Mark stalls as available
+        // Release stalls
         await axios.put(`${STALL_SERVICE}/stalls/update-status`, {
             names: reservation.stalls.map((s) => s.name),
             status: "available",
@@ -176,7 +184,9 @@ export const cancelReservation = async (reservationId, authHeader) => {
         reservation.status = "cancelled";
         await reservation.save();
 
+        console.log(`Reservation ${reservationId} cancelled.`);
         return reservation;
+
     } finally {
         for (const { lockKey, lockToken } of locks) {
             await releaseLock(lockKey, lockToken);
@@ -184,15 +194,15 @@ export const cancelReservation = async (reservationId, authHeader) => {
     }
 };
 
-// ------------------------------------------------------
-// List Queries
-// ------------------------------------------------------
 export const getUserReservations = async (authHeader) => {
+    if (!authHeader) throw new Error("Unauthorized");
+
     const token = authHeader.startsWith("Bearer ")
         ? authHeader.split(" ")[1]
         : authHeader;
+
     const payload = verifyToken(token);
-    const userId = payload?.userId;
+    const userId = payload?.userId || payload?.sub;
     if (!userId) throw new Error("Unauthorized");
 
     return Reservation.find({ userId }).sort({ createdAt: -1 }).lean();
