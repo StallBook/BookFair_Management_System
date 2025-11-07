@@ -1,4 +1,4 @@
-import Reservation from "../models/Reservation.js";
+import Reservation from "../models/reservationModel.js";
 import axios from "axios";
 import { acquireLock, releaseLock } from "../utils/redisLock.js";
 import { sendEmailJob } from "../queue/rabbitmq.js";
@@ -25,7 +25,7 @@ export const verifyToken = (token) => {
 
 export const fetchUserProfile = async (token) => {
     try {
-        const resp = await axios.get(`${AUTH_SERVICE}/api/auth/me`, {
+        const resp = await axios.get(`${AUTH_SERVICE}/auth/me`, {
             headers: { Authorization: token },
         });
         return resp.data.user;
@@ -35,7 +35,7 @@ export const fetchUserProfile = async (token) => {
 };
 
 
-// *Count user's confirmed stalls (sum of stalls in confirmed reservations)
+// Count user's confirmed stalls 
 
 export const countConfirmedReservationsByUser = async (userId) => {
     const reservations = await Reservation.find({

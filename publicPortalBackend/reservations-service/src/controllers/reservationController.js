@@ -19,10 +19,8 @@ export const createReservationHandler = async (req, res) => {
         const reservation = await createReservation({ authHeader, stallIds });
         return res.status(201).json({ reservation });
     } catch (err) {
-        console.error("Create reservation error:", err.message || err);
-        return res
-            .status(400)
-            .json({ error: err.message || "Failed to create reservation" });
+        console.error("createReservation failed:", err.response?.data || err.message || err);
+        throw err;
     }
 };
 

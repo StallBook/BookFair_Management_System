@@ -8,9 +8,9 @@ import {
 
 const router = express.Router();
 
-router.post("/", createReservationHandler);
+router.post("/createReservation", createReservationHandler);
 router.post("/:id/cancel", cancelReservationHandler);
-router.get("/", listReservationsHandler);
+router.get("/getAllReservations", listReservationsHandler);
 router.get("/:id", getReservationByIdHandler);
 
 export default router;

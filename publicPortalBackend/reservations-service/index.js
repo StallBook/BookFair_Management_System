@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import cors from 'cors'
-
+import reservationRoutes from './src/routes/reservationRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -13,6 +13,8 @@ app.use((req, res, next) => {
     next();
 });
 
+
+app.use("/reservations", reservationRoutes);
 
 
 mongoose.connect(process.env.RESERVATION_MONGODB_URI)
