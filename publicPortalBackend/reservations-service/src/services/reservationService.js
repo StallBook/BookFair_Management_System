@@ -56,29 +56,26 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         : authHeader;
 
     const payload = verifyToken(token);
-    console.log("🔍 [DEBUG] Incoming Authorization header:", authHeader);
-    console.log("🔍 [DEBUG] Decoded JWT payload:", payload);
+    console.log("[DEBUG] Incoming Authorization header:", authHeader);
+    console.log(" [DEBUG] Decoded JWT payload:", payload);
 
-    // Fetch user profile from Auth Service
+    // Fetch user profile
     const user = await fetchUserProfile(authHeader);
     if (!user) throw new Error("Unauthorized");
 
-    const userId = user._id || user.userID;
+    const userId = user.userID || user._id;
     const userEmail = user.email;
 
-    if (!userId) {
-        console.error("Invalid user profile received:", user);
-        throw new Error("Invalid user profile: missing userId");
-    }
+    if (!userId) throw new Error("Invalid user profile: missing userId");
 
-    // Validate stall input
+    // Validate input
     if (!stallIds || !Array.isArray(stallIds) || stallIds.length === 0)
         throw new Error("No stallIds provided");
 
     if (stallIds.length > 3)
         throw new Error("You can reserve a maximum of 3 stalls per request");
 
-    // Check total stall limit
+    // Check user’s total confirmed stalls
     const userConfirmedCount = await countConfirmedReservationsByUser(userId);
     if (userConfirmedCount + stallIds.length > 3)
         throw new Error(
@@ -90,12 +87,21 @@ export const createReservation = async ({ authHeader, stallIds }) => {
     try {
         const stalls = [];
 
-        // Validate and lock each stall
         for (const stallId of stallIds) {
+            // Check with Stall Service
             const stallResp = await axios.get(`${STALL_SERVICE}/stalls/${stallId}`);
             const stall = stallResp.data?.data;
-
             if (!stall) throw new Error(`Stall ${stallId} not found`);
+
+            //Double-check with Reservation DB
+            const existingReservation = await Reservation.findOne({
+                "stalls.stallId": stallId,
+                status: { $in: ["pending", "confirmed"] },
+            });
+
+            if (existingReservation)
+                throw new Error(`Stall ${stall.name || stallId} is already reserved`);
+
             if (stall.status === "reserved")
                 throw new Error(`Stall ${stall.name || stallId} is already reserved`);
 
@@ -113,7 +119,7 @@ export const createReservation = async ({ authHeader, stallIds }) => {
             });
         }
 
-        // Create pending reservation
+        //Create pending reservation
         const reservation = new Reservation({
             userId,
             userEmail,
@@ -122,7 +128,7 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         });
         await reservation.save();
 
-        // Mark stalls as reserved in Stall-Service
+        // Update Stall Service status
         await axios.put(`${STALL_SERVICE}/stalls/update-status`, {
             names: stalls.map((s) => s.name),
             status: "reserved",
@@ -134,65 +140,79 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         reservation.qrToken = reservation._id.toString();
         await reservation.save();
 
-        console.log(`Reservation confirmed for user ${userEmail} (${userId})`);
+        console.log(`Reservation confirmed for ${userEmail} (${userId})`);
         return reservation;
 
     } catch (err) {
         console.error("Reservation creation failed:", err.message);
 
-        // Rollback stall status if any failure
+        // Rollback stall status if failure
         try {
             await axios.put(`${STALL_SERVICE}/stalls/update-status`, {
                 names: stallIds,
                 status: "available",
             });
         } catch (rollbackErr) {
-            console.error("⚠️ Rollback failed:", rollbackErr.message);
+            console.error("Rollback failed:", rollbackErr.message);
         }
 
         throw err;
     } finally {
-        // Release Redis locks
         for (const { lockKey, lockToken } of locks) {
             await releaseLock(lockKey, lockToken);
         }
     }
 };
 
+
 export const cancelReservation = async (reservationId, authHeader) => {
+    if (!authHeader) throw new Error("Unauthorized");
+
+    // Find reservation
     const reservation = await Reservation.findById(reservationId);
     if (!reservation) throw new Error("Reservation not found");
 
     const locks = [];
 
     try {
-        // Lock all stalls before cancelling
+        // Acquire locks for all stalls before cancelling
         for (const s of reservation.stalls) {
             const lockKey = `lock:stall:${s.stallId}`;
             const lockToken = await acquireLock(lockKey);
-            if (!lockToken)
+
+            if (!lockToken) {
                 throw new Error(`Failed to acquire lock for stall ${s.stallId}`);
+            }
+
             locks.push({ lockKey, lockToken });
         }
 
-        // Release stalls
+        // Update stall statuses in Stall Service
         await axios.put(`${STALL_SERVICE}/stalls/update-status`, {
             names: reservation.stalls.map((s) => s.name),
             status: "available",
+            userId: null,
         });
 
+        // Update reservation status
         reservation.status = "cancelled";
+        reservation.cancelledAt = new Date();
         await reservation.save();
 
-        console.log(`Reservation ${reservationId} cancelled.`);
+        console.log(` Reservation ${reservationId} cancelled successfully.`);
         return reservation;
 
+    } catch (err) {
+        console.error(`Error cancelling reservation ${reservationId}:`, err.message);
+        throw err;
     } finally {
+        // Always release locks
         for (const { lockKey, lockToken } of locks) {
             await releaseLock(lockKey, lockToken);
         }
     }
 };
+
 
 export const getUserReservations = async (authHeader) => {
     if (!authHeader) throw new Error("Unauthorized");
