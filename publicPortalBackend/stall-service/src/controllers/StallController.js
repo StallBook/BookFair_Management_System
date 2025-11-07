@@ -100,10 +100,25 @@ const getStallForUser = async (request, response) => {
   }
 };
 
+const getStallById = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const stall = await Stall.findById(id);
+    if (!stall) {
+      return response.status(404).json({ message: "Stall not found" });
+    }
+    response.status(200).json({ message: "Stall fetched successfully", data: stall });
+  } catch (error) {
+    console.error("Error fetching stall by ID:", error);
+    response.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getAllStalls,
   getAllStallsAvailable,
   getStallByName,
   updateStallStatus,
   getStallForUser,
+  getStallById,
 };
