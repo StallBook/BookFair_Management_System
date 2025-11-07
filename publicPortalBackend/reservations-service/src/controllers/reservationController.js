@@ -1,5 +1,8 @@
 import {
     createReservation,
+    cancelReservation,
+    getUserReservations,
+    getAllReservations,
 } from "../services/reservationService.js";
 
 
@@ -19,5 +22,42 @@ export const createReservationHandler = async (req, res) => {
         return res
             .status(400)
             .json({ error: err.message || "Failed to create reservation" });
+    }
+};
+
+export const cancelReservationHandler = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        const reservationId = req.params.id;
+
+        if (!authHeader) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const reservation = await cancelReservation(reservationId, authHeader);
+        return res.json({ reservation });
+    } catch (err) {
+        console.error("Cancel reservation error:", err.message || err);
+        return res
+            .status(400)
+            .json({ error: err.message || "Failed to cancel reservation" });
+    }
+};
+
+export const listReservationsHandler = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        const userOnly = req.query.user === "true";
+
+        const reservations = userOnly
+            ? await getUserReservations(authHeader)
+            : await getAllReservations();
+
+        return res.json({ reservations });
+    } catch (err) {
+        console.error("List reservations error:", err.message || err);
+        return res
+            .status(500)
+            .json({ error: err.message || "Failed to list reservations" });
     }
 };
