@@ -9,7 +9,15 @@ authRouters.post('/signin', handleSignIn);
 
 
 authRouters.get("/profile", verifyToken, (req, res) => {
-    res.json({ message: "Protected route accessed!", user: req.user });
+    res.json({
+        message: "Profile fetched successfully",
+        user: {
+            _id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            userID: req.user.userID
+        },
+    });
 });
 
 export default authRouters;
