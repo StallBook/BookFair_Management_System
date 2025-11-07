@@ -21,7 +21,7 @@ export async function userSignUpService(userData: SignUpPayload): Promise<any> {
     if (!response.ok) {
       return {
         message: "error",
-        error: data.message || "Signup failed",
+        error: data.error || "Signup failed",
       };
     }
 
@@ -52,7 +52,7 @@ export async function userSignInService(userData: SignInPayload): Promise<any> {
     if (!response.ok) {
       return {
         message: "error",
-        error: data.message || "Signin failed",
+        error: data.error || "Signin failed",
       };
     }
 
