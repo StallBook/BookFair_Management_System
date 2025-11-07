@@ -5,9 +5,10 @@ interface SignUpPayload {
   email: string;
   password: string;
 }
+
 export async function userSignUpService(userData: SignUpPayload): Promise<any> {
   try {
-    const response = await fetch(`${API_URL}/auth/user/signup`, {
+    const response = await fetch(`${API_URL}/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -19,12 +20,14 @@ export async function userSignUpService(userData: SignUpPayload): Promise<any> {
 
     if (!response.ok) {
       return {
-        message: data.message || "Signup failed",
+        message: "error",
+        error: data.message || "Signup failed",
       };
     }
-    return data;
+
+    return { message: "success", ...data };
   } catch (error: any) {
     console.error("Fetch error in userSignUpService:", error);
+    return { message: "error", error: "Network error. Please try again later." };
   }
 }
-
