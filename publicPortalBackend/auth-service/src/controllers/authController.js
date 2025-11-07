@@ -6,10 +6,10 @@ export const handleSignUp = async (req, res) => {
         const user = await signUp(name, email, password);
 
         console.log("User created successfully", user);
-        res.status(201).json(user);
+        res.status(201).json({ message:"success", user });
     }
     catch (err) {
-        res.status(400).json({ error: err.message });
+        res.status(400).json({message:"failure", error: err.message });
     }
 }
 
