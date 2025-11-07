@@ -34,3 +34,10 @@ export const validateField = (name: string, value: string): string => {
 
   return error;
 };
+
+export const validateSimpleField = (name: string, value: string) => {
+  if (!value.trim()) {
+    return `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+  }
+  return "";
+};
