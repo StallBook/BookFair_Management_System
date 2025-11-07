@@ -5,6 +5,8 @@ import { Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { userSignUpService } from "../services/User";
 import { toast } from "react-toastify";
+import { renderError } from "../helper/ErrorHelper";
+import { validateField } from "../helper/ValidationHelper";
 
 const { Text } = Typography;
 
@@ -12,6 +14,11 @@ const Signup = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({
     username: "",
     email: "",
     password: "",
@@ -45,16 +52,25 @@ const Signup = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
+    const error = validateField(name, value);
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!formValues.username || !formValues.email || !formValues.password) {
-      toast.warn("Please fill out all fields.");
-      return;
-    }
+
+    const newErrors: any = {};
+    Object.entries(formValues).forEach(([key, value]) => {
+      newErrors[key] = validateField(key, value);
+    });
+    setErrors(newErrors);
+
+    const hasError = Object.values(newErrors).some((err) => err);
+    if (hasError) return;
+
     onFinish(formValues);
   };
+
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
@@ -78,32 +94,51 @@ const Signup = () => {
 
         {/* Input Fields */}
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Username"
-            className="p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            name="username"
-            value={formValues.username}
-            onChange={handleChange}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            name="email"
-            value={formValues.email}
-            onChange={handleChange}
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            className="p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            name="password"
-            value={formValues.password}
-            onChange={handleChange}
-          />
-
+          <div className="text-left">
+            <input
+              type="text"
+              placeholder="Username"
+              className={`p-3 rounded-lg border ${
+                errors.username
+                  ? "border-red-400 focus:ring-red-500"
+                  : "border-blue-300 focus:ring-blue-500"
+              } focus:outline-none focus:ring-2 w-full`}
+              name="username"
+              value={formValues.username}
+              onChange={handleChange}
+            />
+            {renderError(errors.username)}
+          </div>
+          <div className="text-left">
+            <input
+              type="email"
+              placeholder="Email"
+              className={`p-3 rounded-lg border ${
+                errors.email
+                  ? "border-red-400 focus:ring-red-500"
+                  : "border-blue-300 focus:ring-blue-500"
+              } focus:outline-none focus:ring-2 w-full`}
+              name="email"
+              value={formValues.email}
+              onChange={handleChange}
+            />
+            {renderError(errors.email)}
+          </div>
+          <div className="text-left">
+            <input
+              type="password"
+              placeholder="Password"
+              className={`p-3 rounded-lg border ${
+                errors.password
+                  ? "border-red-400 focus:ring-red-500"
+                  : "border-blue-300 focus:ring-blue-500"
+              } focus:outline-none focus:ring-2 w-full`}
+              name="password"
+              value={formValues.password}
+              onChange={handleChange}
+            />
+            {renderError(errors.password)}
+          </div>
           {/* Signup Button */}
 
           <button
