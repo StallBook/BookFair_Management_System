@@ -7,9 +7,14 @@ import { userSignUpService } from "../services/User";
 import { toast } from "react-toastify";
 import { renderError } from "../helper/ErrorHelper";
 import { validateField } from "../helper/ValidationHelper";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import GoogleLogin from "./GoogleLogin";
 
 const { Text } = Typography;
-
+interface User {
+  username: string;
+  email: string;
+}
 const Signup = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -23,6 +28,8 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const [user, setUser] = useState<User | null>(null);
+  const clientId = process.env.REACT_APP_CLIENT_ID ;
 
   const onFinish = async (values: any) => {
     try {
@@ -162,14 +169,19 @@ const Signup = () => {
         </div>
 
         {/* Google Signup */}
-        <button className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded-lg py-3 px-4 w-full transition-all mb-4">
+        <button className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded-lg py-1 px-4 w-full transition-all mb-4">
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             alt="Google"
             className="w-5 h-5"
           />
-          Sign up with Google
+          <GoogleOAuthProvider clientId={clientId!}>
+            <GoogleLogin setUser={setUser}></GoogleLogin>
+            {user && user.username}
+            {user && user.email}
+          </GoogleOAuthProvider>
         </button>
+
         <Text className="mt-3 text-center text-sm md:text-base text-gray-700">
           Already have an account?{" "}
           <span
