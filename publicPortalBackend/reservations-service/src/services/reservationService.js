@@ -3,6 +3,7 @@ import axios from "axios";
 import { acquireLock, releaseLock } from "../utils/redisLock.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { sendEmailJob } from "../queue/rabbitmq.js";
 
 dotenv.config();
 
@@ -139,6 +140,18 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         reservation.status = "confirmed";
         reservation.qrToken = reservation._id.toString();
         await reservation.save();
+
+        // Send RabbitMQ email job
+        await sendEmailJob({
+            reservationId: reservation._id,
+            userEmail,
+            stallIds,
+            qrContent: reservation.qrToken,
+            message: `Your reservation for stalls ${stalls
+                .map((s) => s.name)
+                .join(", ")} is confirmed.`,
+        });
+
 
         console.log(`Reservation confirmed for ${userEmail} (${userId})`);
         return reservation;
