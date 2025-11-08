@@ -11,3 +11,7 @@
 ### cd E:\rabbitmq-default
 
 ### .\start-rabbitmq-default.ps1
+
+## need to up Consumer Service
+
+### node src/queue/consumerService.js

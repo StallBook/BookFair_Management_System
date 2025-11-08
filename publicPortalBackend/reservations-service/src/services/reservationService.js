@@ -3,7 +3,7 @@ import axios from "axios";
 import { acquireLock, releaseLock } from "../utils/redisLock.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { sendEmailJob } from "../queue/rabbitmq.js";
+import { sendEmailJob } from "../queue/producerService.js";
 
 dotenv.config();
 
