@@ -24,7 +24,7 @@ const Signin = () => {
             />
 
             <div className="relative z-10 bg-white/40 backdrop-blur-md shadow-2xl rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-lg text-center" >
-            <h1 className="text-2xl md:text-3xl font-bold text-blue-800 mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-black mb-6">
                 Welcome Back!
             </h1>
 
@@ -33,26 +33,26 @@ const Signin = () => {
                 <input
                     type="text"
                     placeholder="Username"
-                    className="p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="p-3 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-gray-500"
                 />
                 <input
                     type="password"
                     placeholder="Password"
-                    className="p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="p-3 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-gray-500"
                 />
 
                 {/* Signup Button */}
                 <button
                     type="submit"
-                    className="bg-blue-600 w-full hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all mt-2"
+                    className="bg-black w-full hover:bg-gray-700 text-white font-semibold py-3 rounded-lg transition-all mt-2"
                 >
                     Login                    </button>
             </form>
 
-            <Text className="mt-3 text-center text-sm md:text-base text-gray-700">
+            <Text className="mt-5 text-center text-sm md:text-base text-gray-700">
                     Don't have an account?{" "}
                     <span
-                        className="text-blue-700 cursor-pointer hover:underline"
+                        className="text-red-700 cursor-pointer hover:underline text-md"
                         onClick={() => navigate("/signup")}
                     >
                         Sign Up
