@@ -23,7 +23,8 @@ const Signin = () => {
                                h-10 sm:h-12 md:h-14 lg:h-16 pointer-events-none select-none"
                   />
 
-           
+            <div className="relative z-10 bg-white/40 backdrop-blur-md shadow-2xl rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-lg text-center"/>
+      
             
         </div>
     );
