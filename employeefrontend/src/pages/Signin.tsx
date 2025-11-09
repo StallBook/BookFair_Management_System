@@ -48,6 +48,16 @@ const Signin = () => {
                 >
                     Login                    </button>
             </form>
+
+            <Text className="mt-3 text-center text-sm md:text-base text-gray-700">
+                    Don't have an account?{" "}
+                    <span
+                        className="text-blue-700 cursor-pointer hover:underline"
+                        onClick={() => navigate("/signup")}
+                    >
+                        Sign Up
+                    </span>
+                </Text>
         </div>
 
         </div>
