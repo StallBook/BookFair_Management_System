@@ -1,13 +1,24 @@
-import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Signup from './pages/Signup';
-import Signin from './pages/Signin';
-import StallsMap from './pages/StallsMap';
+import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Signup from "./pages/Signup";
+import Signin from "./pages/Signin";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <div className="App">
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
