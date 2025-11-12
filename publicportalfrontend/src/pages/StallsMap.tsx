@@ -72,7 +72,22 @@ const getStatusColor = (status: Stall["status"]) => {
 const StallsMap: React.FC = () => {
     const [selectedStall, setSelectedStall] = useState<Stall | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+
     const navigate = useNavigate();
+
+    const handleBookClick = () => {
+        setShowModal(true);
+    };
+
+    const handleConfirm = () => {
+        console.log("✅ Stall booked:", selectedStall?.name);
+        setShowModal(false);
+    };
+
+    const handleCancel = () => {
+        setShowModal(false);
+    };
 
     return (
         <div className="flex flex-col md:flex-row h-screen bg-gray-100">
@@ -161,11 +176,12 @@ const StallsMap: React.FC = () => {
                                 {selectedStall.map.y}) on the map.
                             </p>
                             <button
+                                onClick={handleBookClick}
                                 className={`w-full mt-6 py-2 rounded-lg font-semibold transition 
-                  ${selectedStall.status === "available"
+                    ${selectedStall.status === "available"
                                         ? "bg-blue-600 hover:bg-blue-700 text-white"
-                                        : "bg-gray-400 cursor-not-allowed"
-                                    }`}
+                                        : "bg-gray-400 cursor-not-allowed"}
+                  `}
                                 disabled={selectedStall.status !== "available"}
                             >
                                 {selectedStall.status === "available"
@@ -179,6 +195,47 @@ const StallsMap: React.FC = () => {
                         </div>
                     )}
                 </div>
+                {showModal && (
+                    <div
+                        className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50"
+                        aria-hidden="true"
+                    >
+                        <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-lg p-5">
+                            <div className="flex justify-between items-center border-b pb-3">
+                                <h3 className="text-xl font-semibold text-gray-900">
+                                    Confirm Booking
+                                </h3>
+                                <button
+                                    onClick={handleCancel}
+                                    className="text-gray-400 hover:text-gray-600"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            <div className="py-5 text-gray-700">
+                                <p>
+                                    Are you sure you want to book <strong>{selectedStall?.name}</strong>?
+                                </p>
+                            </div>
+
+                            <div className="flex justify-end gap-3 border-t pt-3">
+                                <button
+                                    onClick={handleConfirm}
+                                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                >
+                                    Confirm
+                                </button>
+                                <button
+                                    onClick={handleCancel}
+                                    className="px-5 py-2 border rounded-lg hover:bg-gray-100"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );
