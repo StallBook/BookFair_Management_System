@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import logo from "../assets/lg.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from "react";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 interface Stall {
     _id: string;
@@ -73,7 +77,21 @@ const StallsMap: React.FC = () => {
     const [selectedStall, setSelectedStall] = useState<Stall | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [stalls, setStalls] = useState<Stall[]>([]);
 
+    useEffect(() => {
+        const fetchStalls = async () => {
+            try {
+                const res = await axios.get(`${API_URL}/stalls/stalls/all-stalls`); // 👈 update port/path if needed
+                setStalls(res.data.data); // because your API returns { message, data: [...] }
+                console.log("Fetched stalls:", res.data.data);
+            } catch (error) {
+                console.error("Error fetching stalls:", error);
+            }
+        };
+
+        fetchStalls();
+    }, []);
     const navigate = useNavigate();
 
     const handleBookClick = () => {
