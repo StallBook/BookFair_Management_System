@@ -73,7 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
                 </a>
                 <a
                     className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
-                    href="/talk"
+                    href="/signup"
                 >
                     Sign Up
                 </a>
