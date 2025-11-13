@@ -32,6 +32,9 @@ const Signin = () => {
       };
       const response = await userSignInService(data);
       if (response.message === "success") {
+        if (response.token) {
+          localStorage.setItem("token", response.token);
+        }
         toast.success("Welcome back! You’ve successfully signed in.");
         setTimeout(() => navigate("/"), 2000);
       } else {

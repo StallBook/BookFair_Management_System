@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import Counter from "./counterModel.js";
 
 const reservationSchema = new mongoose.Schema({
     reservationId: { type: String, unique: true },
@@ -29,23 +29,20 @@ reservationSchema.index({ userId: 1 });
 
 reservationSchema.pre("save", async function (next) {
     if (this.isNew && !this.reservationId) {
-        let retryCount = 0;
-        while (retryCount < 5) {
-            try {
-                const count = await mongoose.model("Reservation").countDocuments();
-                this.reservationId = `RES${String(count + 1).padStart(6, "0")}`;
-                return next();
-            } catch (err) {
-                if (err.code === 11000) {
-                    retryCount++;
-                    continue;
-                }
-                return next(err);
-            }
+        try {
+            const counter = await Counter.findOneAndUpdate(
+                { name: "reservation" },
+                { $inc: { seq: 1 } },
+                { new: true, upsert: true }
+            );
+            this.reservationId = `RES${String(counter.seq).padStart(6, "0")}`;
+            next();
+        } catch (err) {
+            next(err);
         }
-        return next(new Error("Failed to generate unique reservationId"));
+    } else {
+        next();
     }
-    next();
 });
 
 export default mongoose.model("Reservation", reservationSchema);
