@@ -24,7 +24,7 @@ interface Stall {
 
 const stallsData: Stall[] = [
   {
-    _id: "6915647da24ed65471004cf4",
+    _id: "69156ecd0a9f9046ebcf6ac0",
     name: "A",
     size: "small",
     dimensions: { width: 2, length: 2 },
