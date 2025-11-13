@@ -257,7 +257,45 @@ export default function Stalls(): JSX.Element {
         </div>
       </header>
 
-      
+      {/* Controls */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col md:flex-row md:items-center gap-3">
+          <div className="flex items-center gap-1 bg-white rounded-xl p-1 ring-1 ring-black/5 w-fit">
+            {[
+              { key: "all", label: "All" },
+              { key: "available", label: "Available" },
+              { key: "reserved", label: "Reserved" },
+            ].map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key as "all" | Status)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                  tab === t.key ? "bg-black text-white" : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative md:ml-auto">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by stall name or ID…"
+              className="w-full md:w-80 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
+            />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
         
 
       
