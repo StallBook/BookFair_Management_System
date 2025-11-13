@@ -81,6 +81,8 @@ const StallsMap: React.FC = () => {
   };
 
   const handleConfirm = () => {
+    if (!selectedStall) return;
+
     console.log("✅ Stall booked:", selectedStall?.name);
     setShowModal(false);
   };
