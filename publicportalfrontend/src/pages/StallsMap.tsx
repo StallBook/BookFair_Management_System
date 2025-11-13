@@ -51,7 +51,10 @@ const StallsMap: React.FC = () => {
     }, [stalls]);
 
     const handleBookClick = () => setShowModal(true);
-    const handleConfirm = () => setShowModal(false);
+    const handleConfirm = () => {
+        setShowModal(false); // close the modal
+        navigate("/add-genres"); // navigate to /add-genres
+    };
     const handleCancel = () => setShowModal(false);
 
     return (
