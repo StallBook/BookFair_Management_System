@@ -10,20 +10,26 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/auth/google/callback", // backend route
+      callbackURL: "http://localhost:5000/auth/auth/google/callback",
       scope: ["profile", "email"],
     },
-    async (profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails[0].value;
         const googleId = profile.id;
 
-        let existingUser = await User.findOne({ googleId });
+        let existingUser = await User.findOne({ email });
 
-        if (existingUser) return done(null, existingUser);
+        if (existingUser) {
+          if (!existingUser.googleId) {
+            existingUser.googleId = googleId;
+            await existingUser.save();
+          }
+          return done(null, existingUser);
+        }
 
         const newUser = new User({
-          googleId,  
+          googleId,
           email,
         });
 
