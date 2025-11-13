@@ -5,7 +5,7 @@ export async function createReservationService(
   token: string
 ): Promise<any> {
   try {
-    const response = await fetch(`${API_URL}/reservations`, {
+    const response = await fetch(`${API_URL}/reservations/reservations/createReservation`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -14,12 +14,14 @@ export async function createReservationService(
       body: JSON.stringify({ stallIds }),
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Failed to create reservation");
-    }
-
+   let data;
+        try {
+        data = await response.json();
+        } catch {
+        const text = await response.text();
+        console.error("Server sent non-JSON response:", text);
+        throw new Error("Invalid response from server");
+        }
     return { message: "success", ...data };
   } catch (error: any) {
     console.error("Reservation creation error:", error);
