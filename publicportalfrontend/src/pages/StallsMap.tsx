@@ -89,6 +89,13 @@ const StallsMap: React.FC = () => {
       return;
     }
     const res = await createReservationService([selectedStall._id], token);
+    if (res.message === "success") {
+      alert(` Reservation confirmed for satll ${selectedStall.name}!`);
+      // need to refresh the stall status after booking
+      setShowModal(false);
+    } else {
+      alert(`${res.error}`);
+    }
 
     console.log("Stall booked:", selectedStall?.name);
     setShowModal(false);
