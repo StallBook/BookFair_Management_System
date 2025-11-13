@@ -77,11 +77,15 @@ const StallsMap: React.FC = () => {
                     >
                         Dashboard
                     </button>
-                    <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
+                    <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
+                        onClick={() => navigate("/stalls-map")}
+                    >
                         Stalls
                     </button>
-                    <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
-                        Bookings
+                    <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
+                        onClick={() => navigate("/add-genres")}
+                    >
+                        Add Genres
                     </button>
                     <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
                         Settings
