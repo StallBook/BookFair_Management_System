@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { JSX } from "react";
+import bg from "../assets/bg1.png";
+
 
 
 export type Status = "available" | "reserved";
@@ -136,39 +138,47 @@ function StatusBadge({ status }: { status: Status }) {
 }
 
 function StallCard({ stall, onOpen }: { stall: Stall; onOpen: (s: Stall) => void }) {
+  // Single off-white background for ALL stall cards
+  const base = "bg-gray-300 ring-gray-200 hover:ring-gray-300"; // off-white tint
+
   return (
     <button
       onClick={() => onOpen(stall)}
-      className="group relative w-full text-left bg-white rounded-2xl shadow-sm ring-1 ring-black/5 p-4 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition"
+      className={`group relative w-full text-left rounded-2xl shadow-sm ring-1 p-4
+                  focus:outline-none focus:ring-2 focus:ring-offset-2 transition ${base}`}
     >
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-lg font-semibold tracking-tight">{stall.name}</h3>
-          <p className="text-xs text-gray-500 mt-0.5">ID: {stall.id}</p>
+          <p className="text-xs text-gray-600 mt-0.5">ID: {stall.id}</p>
         </div>
         <StatusBadge status={stall.status} />
       </div>
+
       <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-gray-700">
-        <div className="rounded-lg bg-gray-50 p-2">
+        <div className="rounded-lg bg-white/80 backdrop-blur-sm p-2 ring-1 ring-black/5">
           <div className="text-xs text-gray-500">Size</div>
           <div className="font-medium">{stall.size || "—"}</div>
         </div>
-        <div className="rounded-lg bg-gray-50 p-2">
+        <div className="rounded-lg bg-white/80 backdrop-blur-sm p-2 ring-1 ring-black/5">
           <div className="text-xs text-gray-500">Price / day</div>
           <div className="font-medium">
             LKR {stall.pricePerDay?.toLocaleString?.() ?? "—"}
           </div>
         </div>
       </div>
+
       {stall.status === "reserved" && (
-        <div className="mt-3 text-xs text-gray-600">
-          <span className="font-medium">Reserved by:</span> {stall?.reservedBy?.name || stall?.reservedBy?.userId}
+        <div className="mt-3 text-xs text-gray-700">
+          <span className="font-medium">Reserved by:</span>{" "}
+          {stall?.reservedBy?.name || stall?.reservedBy?.userId}
         </div>
       )}
       <div className="absolute inset-x-0 -bottom-px h-0.5 bg-gradient-to-r from-transparent via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
     </button>
   );
 }
+
 
 export default function Stalls(): JSX.Element {
   // Safe navigation fallbacks so this component works without a Router
@@ -235,14 +245,14 @@ export default function Stalls(): JSX.Element {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black bg-opacity-200">
       {/* Top bar */}
-      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
+      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-gray-600 border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
-          <div className="font-bold tracking-tight text-xl">StallBook Dashboard</div>
+          <div className="font-bold text-white tracking-tight text-xl">StallBook Dashboard</div>
           <div className="ml-auto flex items-center gap-2">
             <button
-              className="text-sm text-gray-600 hover:text-black px-3 py-1.5 rounded-lg hover:bg-gray-100"
+              className="text-sm text-gray-800 fontweight-medium font-semibold hover:text-black px-3 py-1.5 rounded-lg hover:bg-gray-100"
               onClick={goBack}
             >
               ← Back
@@ -256,7 +266,12 @@ export default function Stalls(): JSX.Element {
           </div>
         </div>
       </header>
-
+ <div
+    className="relative min-h-screen bg-gray-50 bg-cover bg-center "
+    style={{ backgroundImage: `url(${bg})` }}
+    
+  >
+    
       {/* Controls */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row md:items-center gap-3">
@@ -312,12 +327,13 @@ export default function Stalls(): JSX.Element {
           )}
         </div>
       </div>
+</div>
 
      {/* Drawer / Slide-over */}
       {active && (
-        <div className="fixed inset-0 z-40">
+        <div className="fixed inset-0 z-40 ">
           <div className="absolute inset-0 bg-black/40" onClick={() => setActive(null)} />
-          <aside className="absolute right-0 top-0 h-full w-full sm:w-[28rem] bg-white shadow-2xl p-6 overflow-y-auto">
+          <aside className="absolute right-0 top-0 h-full w-full sm:w-[28rem] bg-blue-100 shadow-2xl p-6 overflow-y-auto">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-xl font-semibold">{active.name}</h2>
