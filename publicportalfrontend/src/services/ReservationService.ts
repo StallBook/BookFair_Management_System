@@ -14,15 +14,18 @@ export async function createReservationService(
       body: JSON.stringify({ stallIds }),
     });
 
-   let data;
-        try {
-        data = await response.json();
-        } catch {
-        const text = await response.text();
-        console.error("Server sent non-JSON response:", text);
-        throw new Error("Invalid response from server");
-        }
-    return { message: "success", ...data };
+    const data = await response.json().catch(() => null);
+
+    if (response.ok) {
+      return { message: "success", ...data };
+    }
+    return {
+      message: "error",
+      error:
+        data?.message ||
+        data?.error ||
+        `Request failed with status ${response.status}`,
+    };
   } catch (error: any) {
     console.error("Reservation creation error:", error);
     return { message: "error", error: error.message };
