@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 const { Text } = Typography;
 
 export default function Signin() {
+
+const Signin = () => {
     const navigate = useNavigate();
 
     return (
@@ -123,3 +125,21 @@ export default function Signin() {
         </div>
     );
 }
+            className="min-h-screen bg-cover bg-center flex items-center justify-center"
+            style={{ backgroundImage: `url(${bg})` }}
+        >
+            <img
+                    src={logo}
+                    alt="Stallbook"
+                    className="absolute left-1/2 -translate-x-1/2 z-0
+                               top-4 sm:top-6 md:top-8
+                               h-10 sm:h-12 md:h-14 lg:h-16 pointer-events-none select-none"
+                  />
+
+           
+            
+        </div>
+    );
+};
+
+export default Signin;

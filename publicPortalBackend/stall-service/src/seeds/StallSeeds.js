@@ -4,8 +4,9 @@ require("dotenv").config({ path: "../../.env" });
 
 const MONGO_URI = process.env.MONGODB_URI_STALL_SERVICE;
 
-const stalls = [
-  //  Small stalls (A–J)
+// Sample stalls data
+export const stalls = [
+  // 🔹 Small stalls (A–J)
   { name: "A", size: "small", dimensions: { width: 2, length: 2 }, map: { x: 0, y: 0, w: 2, h: 2 } },
   { name: "B", size: "small", dimensions: { width: 2, length: 2 }, map: { x: 3, y: 0, w: 2, h: 2 } },
   { name: "C", size: "small", dimensions: { width: 2, length: 2 }, map: { x: 6, y: 0, w: 2, h: 2 } },
@@ -17,7 +18,7 @@ const stalls = [
   { name: "I", size: "small", dimensions: { width: 2, length: 2 }, map: { x: 9, y: 3, w: 2, h: 2 } },
   { name: "J", size: "small", dimensions: { width: 2, length: 2 }, map: { x: 12, y: 3, w: 2, h: 2 } },
 
-  //  Medium stalls (K–T)
+  // 🔸 Medium stalls (K–T)
   { name: "K", size: "medium", dimensions: { width: 3, length: 3 }, map: { x: 0, y: 6, w: 3, h: 3 } },
   { name: "L", size: "medium", dimensions: { width: 3, length: 3 }, map: { x: 4, y: 6, w: 3, h: 3 } },
   { name: "M", size: "medium", dimensions: { width: 3, length: 3 }, map: { x: 8, y: 6, w: 3, h: 3 } },
@@ -29,7 +30,7 @@ const stalls = [
   { name: "S", size: "medium", dimensions: { width: 3, length: 3 }, map: { x: 0, y: 14, w: 3, h: 3 } },
   { name: "T", size: "medium", dimensions: { width: 3, length: 3 }, map: { x: 4, y: 14, w: 3, h: 3 } },
 
-  // Large stalls (U–AD)
+  // 🟩 Large stalls (U–AD)
   { name: "U", size: "large", dimensions: { width: 4, length: 4 }, map: { x: 0, y: 18, w: 4, h: 4 } },
   { name: "V", size: "large", dimensions: { width: 4, length: 4 }, map: { x: 5, y: 18, w: 4, h: 4 } },
   { name: "W", size: "large", dimensions: { width: 4, length: 4 }, map: { x: 10, y: 18, w: 4, h: 4 } },
