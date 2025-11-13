@@ -239,7 +239,7 @@ export default function Stalls(): JSX.Element {
       {/* Top bar */}
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
-          <div className="font-bold tracking-tight text-xl">StallBook Dashboard</div>
+          <div className="font-bold tracking-tight text-xl">StallBook • Admin</div>
           <div className="ml-auto flex items-center gap-2">
             <button
               className="text-sm text-gray-600 hover:text-black px-3 py-1.5 rounded-lg hover:bg-gray-100"
@@ -257,11 +257,169 @@ export default function Stalls(): JSX.Element {
         </div>
       </header>
 
-      
-        
+      {/* Controls */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col md:flex-row md:items-center gap-3">
+          <div className="flex items-center gap-1 bg-white rounded-xl p-1 ring-1 ring-black/5 w-fit">
+            {[
+              { key: "all", label: "All" },
+              { key: "available", label: "Available" },
+              { key: "reserved", label: "Reserved" },
+            ].map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key as "all" | Status)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                  tab === t.key ? "bg-black text-white" : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
 
-      
-      
+          <div className="relative md:ml-auto">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by stall name or ID…"
+              className="w-full md:w-80 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
+            />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="mt-5">
+          {loading ? (
+            <div className="text-gray-600">Loading stalls…</div>
+          ) : error ? (
+            <div className="text-red-600">{error}</div>
+          ) : filtered.length === 0 ? (
+            <div className="text-gray-600">No stalls match your filters.</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filtered.map((stall) => (
+                <StallCard key={stall.id} stall={stall} onOpen={setActive} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Drawer / Slide-over */}
+      {active && (
+        <div className="fixed inset-0 z-40">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setActive(null)} />
+          <aside className="absolute right-0 top-0 h-full w-full sm:w-[28rem] bg-white shadow-2xl p-6 overflow-y-auto">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{active.name}</h2>
+                <p className="text-xs text-gray-500 mt-0.5">ID: {active.id}</p>
+              </div>
+              <StatusBadge status={active.status} />
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+              <div className="rounded-lg bg-gray-50 p-3">
+                <div className="text-xs text-gray-500">Size</div>
+                <div className="font-medium">{active.size || "—"}</div>
+              </div>
+              <div className="rounded-lg bg-gray-50 p-3">
+                <div className="text-xs text-gray-500">Price / day</div>
+                <div className="font-medium">LKR {active.pricePerDay?.toLocaleString?.() || "—"}</div>
+              </div>
+            </div>
+
+            {active.status === "reserved" ? (
+              <div className="mt-6">
+                <h3 className="text-sm font-semibold">Reserver Details</h3>
+                <div className="mt-2 space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-600">User ID</div>
+                    <div className="font-mono">{active.reservedBy?.userId}</div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-600">Name</div>
+                    <div>{active.reservedBy?.name}</div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-600">Email</div>
+                    <a className="underline" href={`mailto:${active.reservedBy?.email}`}>{active.reservedBy?.email}</a>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-600">Phone</div>
+                    <a className="underline" href={`tel:${active.reservedBy?.phone}`}>{active.reservedBy?.phone}</a>
+                  </div>
+                  {active.reservedBy?.organization && (
+                    <div className="flex items-center justify-between">
+                      <div className="text-gray-600">Organization</div>
+                      <div>{active.reservedBy.organization}</div>
+                    </div>
+                  )}
+                  {active.reservedAt && (
+                    <div className="flex items-center justify-between">
+                      <div className="text-gray-600">Reserved At</div>
+                      <div>{new Date(active.reservedAt).toLocaleString()}</div>
+                    </div>
+                  )}
+                  {active.notes && (
+                    <div className="pt-2">
+                      <div className="text-xs text-gray-500">Notes</div>
+                      <div className="text-sm">{active.notes}</div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => copy(active.reservedBy?.userId)}
+                    className="px-3 py-2 text-sm rounded-lg border border-gray-300 hover:bg-gray-50"
+                  >
+                    Copy User ID
+                  </button>
+                  <a
+                    href={`mailto:${active.reservedBy?.email}?subject=Your%20Bookfair%20Stall%20Reservation%20(${active.name})`}
+                    className="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-black"
+                  >
+                    Email User
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-6 text-sm text-gray-600">
+                This stall is available. You can reserve it for a user from here later.
+              </div>
+            )}
+
+            <div className="mt-8 flex items-center gap-2">
+              <button
+                onClick={toggleStatus(active)}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold ${
+                  active.status === "available"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-green-600 text-white hover:bg-green-700"
+                }`}
+              >
+                {active.status === "available" ? "Mark as Reserved" : "Release Stall"}
+              </button>
+              <button
+                onClick={() => setActive(null)}
+                className="px-4 py-2 rounded-xl text-sm font-semibold border border-gray-300 hover:bg-gray-50"
+              >
+                Close
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }
