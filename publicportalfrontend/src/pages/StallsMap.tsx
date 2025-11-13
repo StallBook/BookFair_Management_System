@@ -3,9 +3,7 @@ import logo from "../assets/lg.png";
 import { useNavigate } from "react-router-dom";
 import { createReservationService } from "../services/ReservationService";
 import { getAllStalls } from "../services/StallService";
-import axios from "axios";
-
-const API_URL = process.env.REACT_APP_API_URL;
+import { toast } from "react-toastify";
 
 interface Stall {
   _id: string;
@@ -55,21 +53,25 @@ const StallsMap: React.FC = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please login first");
+        toast.error("Please login first");
         return;
       }
       const res = await createReservationService([selectedStall._id], token);
       if (res.message === "success") {
-        alert(` Reservation confirmed for satll ${selectedStall.name}!`);
+        toast.success(
+          ` Reservation confirmed for satll ${selectedStall.name}!`
+        );
         setShowModal(false);
         await fetchStalls();
         setSelectedStall(null);
       } else {
-        alert(`${res.error}`);
+        toast.error(`${res.error}`);
+        setShowModal(false);
+        setSelectedStall(null);
       }
     } catch (err: any) {
       console.error("Booking failed:", err);
-      alert("Something went wrong while booking. Please try again.");
+      toast.error("Something went wrong while booking. Please try again.");
     }
   };
   const randomizedStalls = useMemo(() => {
