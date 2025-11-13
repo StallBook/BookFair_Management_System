@@ -29,7 +29,8 @@ const Signup = () => {
     password: "",
   });
   const [user, setUser] = useState<User | null>(null);
-  const clientId = process.env.REACT_APP_CLIENT_ID ;
+  const clientId = process.env.REACT_APP_CLIENT_ID;
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const onFinish = async (values: any) => {
     try {
@@ -76,6 +77,11 @@ const Signup = () => {
     if (hasError) return;
 
     onFinish(formValues);
+  };
+
+  const googleAuth = () => {
+    console.log("API_URL:", API_URL);
+    window.open(`${API_URL}/auth/auth/google`, "_self");
   };
 
   return (
@@ -169,17 +175,17 @@ const Signup = () => {
         </div>
 
         {/* Google Signup */}
-        <button className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded-lg py-1 px-4 w-full transition-all mb-4">
+        <button
+          type="button"
+          onClick={googleAuth}
+          className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded-lg py-3 px-4 w-full transition-all mb-4"
+        >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             alt="Google"
             className="w-5 h-5"
           />
-          <GoogleOAuthProvider clientId={clientId!}>
-            <GoogleLogin setUser={setUser}></GoogleLogin>
-            {user && user.username}
-            {user && user.email}
-          </GoogleOAuthProvider>
+          Sign in with Google
         </button>
 
         <Text className="mt-3 text-center text-sm md:text-base text-gray-700">
