@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import { ToastContainer } from "react-toastify";
+import StallsMap from "./pages/StallsMap";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
+          <Route path="/stalls-map" element={<StallsMap />} />
         </Routes>
       </BrowserRouter>
     </div>
