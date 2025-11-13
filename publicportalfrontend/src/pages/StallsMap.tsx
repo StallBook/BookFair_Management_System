@@ -25,54 +25,6 @@ interface Stall {
   reservedAt?: string | null;
 }
 
-const stallsData: Stall[] = [
-  {
-    _id: "69156ecd0a9f9046ebcf6ac0",
-    name: "A",
-    size: "small",
-    dimensions: { width: 2, length: 2 },
-    map: { x: 20, y: 40, w: 80, h: 80 },
-    status: "available",
-  },
-  {
-    _id: "2",
-    name: "A2",
-    size: "medium",
-    dimensions: { width: 3, length: 2 },
-    map: { x: 120, y: 40, w: 100, h: 100 },
-    status: "reserved",
-  },
-  {
-    _id: "3",
-    name: "A3",
-    size: "large",
-    dimensions: { width: 4, length: 3 },
-    map: { x: 240, y: 40, w: 120, h: 120 },
-    status: "cancelled",
-  },
-  {
-    _id: "4",
-    name: "B1",
-    size: "small",
-    dimensions: { width: 2, length: 2 },
-    map: { x: 20, y: 180, w: 80, h: 80 },
-    status: "available",
-  },
-];
-
-const getStatusColor = (status: Stall["status"]) => {
-  switch (status) {
-    case "available":
-      return "bg-green-400 hover:bg-green-500";
-    case "reserved":
-      return "bg-gray-400 cursor-not-allowed";
-    case "cancelled":
-      return "bg-red-400";
-    default:
-      return "bg-gray-300";
-  }
-};
-
 const StallsMap: React.FC = () => {
   const [selectedStall, setSelectedStall] = useState<Stall | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -91,6 +43,7 @@ const StallsMap: React.FC = () => {
     };
     fetchStalls();
   }, []);
+
   const handleBookClick = () => {
     setShowModal(true);
   };
