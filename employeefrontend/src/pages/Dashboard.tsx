@@ -333,7 +333,7 @@ export default function Stalls(): JSX.Element {
       {active && (
         <div className="fixed inset-0 z-40 ">
           <div className="absolute inset-0 bg-black/40" onClick={() => setActive(null)} />
-          <aside className="absolute right-0 top-0 h-full w-full sm:w-[28rem] bg-white shadow-2xl p-6 overflow-y-auto">
+          <aside className="absolute right-0 top-0 h-full w-full sm:w-[28rem] bg-blue-100 shadow-2xl p-6 overflow-y-auto">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-xl font-semibold">{active.name}</h2>
