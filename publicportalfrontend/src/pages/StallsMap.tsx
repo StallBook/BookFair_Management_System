@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/lg.png";
 import { useNavigate } from "react-router-dom";
-import { createReservationService } from "../services/ReservationService";
 
 interface Stall {
   _id: string;
@@ -81,30 +80,11 @@ const StallsMap: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleConfirm = async () => {
-    if (!selectedStall) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Please login first");
-        return;
-      }
-
-      const res = await createReservationService([selectedStall._id], token);
-
-      if (res.message === "success") {
-        alert(`Reservation confirmed for ${selectedStall.name}!`);
-        // Optionally refresh stall list or redirect
-        setShowModal(false);
-      } else {
-        alert(` ${res.error}`);
-      }
-    } catch (err: any) {
-      console.error("Booking failed:", err);
-      alert("Something went wrong while booking. Please try again.");
-    }
+  const handleConfirm = () => {
+    console.log("✅ Stall booked:", selectedStall?.name);
+    setShowModal(false);
   };
+
   const handleCancel = () => {
     setShowModal(false);
   };
