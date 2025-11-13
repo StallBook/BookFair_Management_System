@@ -313,14 +313,120 @@ export default function Stalls(): JSX.Element {
         </div>
       </div>
 
-        
+     {/* Drawer / Slide-over */}
+      {active && (
+        <div className="fixed inset-0 z-40">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setActive(null)} />
+          <aside className="absolute right-0 top-0 h-full w-full sm:w-[28rem] bg-white shadow-2xl p-6 overflow-y-auto">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{active.name}</h2>
+                <p className="text-xs text-gray-500 mt-0.5">ID: {active.id}</p>
+              </div>
+              <StatusBadge status={active.status} />
+            </div>
 
-      
-      
+            <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+              <div className="rounded-lg bg-gray-50 p-3">
+                <div className="text-xs text-gray-500">Size</div>
+                <div className="font-medium">{active.size || "—"}</div>
+              </div>
+              <div className="rounded-lg bg-gray-50 p-3">
+                <div className="text-xs text-gray-500">Price / day</div>
+                <div className="font-medium">LKR {active.pricePerDay?.toLocaleString?.() || "—"}</div>
+              </div>
+            </div>
+
+            {active.status === "reserved" ? (
+              <div className="mt-6">
+                <h3 className="text-sm font-semibold">Reserver Details</h3>
+                <div className="mt-2 space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-600">User ID</div>
+                    <div className="font-mono">{active.reservedBy?.userId}</div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-600">Name</div>
+                    <div>{active.reservedBy?.name}</div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-600">Email</div>
+                    <a className="underline" href={`mailto:${active.reservedBy?.email}`}>{active.reservedBy?.email}</a>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-600">Phone</div>
+                    <a className="underline" href={`tel:${active.reservedBy?.phone}`}>{active.reservedBy?.phone}</a>
+                  </div>
+                  {active.reservedBy?.organization && (
+                    <div className="flex items-center justify-between">
+                      <div className="text-gray-600">Organization</div>
+                      <div>{active.reservedBy.organization}</div>
+                    </div>
+                  )}
+                  {active.reservedAt && (
+                    <div className="flex items-center justify-between">
+                      <div className="text-gray-600">Reserved At</div>
+                      <div>{new Date(active.reservedAt).toLocaleString()}</div>
+                    </div>
+                  )}
+                  {active.notes && (
+                    <div className="pt-2">
+                      <div className="text-xs text-gray-500">Notes</div>
+                      <div className="text-sm">{active.notes}</div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => copy(active.reservedBy?.userId)}
+                    className="px-3 py-2 text-sm rounded-lg border border-gray-300 hover:bg-gray-50"
+                  >
+                    Copy User ID
+                  </button>
+                  <a
+                    href={`mailto:${active.reservedBy?.email}?subject=Your%20Bookfair%20Stall%20Reservation%20(${active.name})`}
+                    className="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-black"
+                  >
+                    Email User
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-6 text-sm text-gray-600">
+                This stall is available. You can reserve it for a user from here later.
+              </div>
+            )}
+
+            <div className="mt-8 flex items-center gap-2">
+              <button
+                onClick={toggleStatus(active)}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold ${
+                  active.status === "available"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-green-600 text-white hover:bg-green-700"
+                }`}
+              >
+                {active.status === "available" ? "Mark as Reserved" : "Release Stall"}
+              </button>
+              <button
+                onClick={() => setActive(null)}
+                className="px-4 py-2 rounded-xl text-sm font-semibold border border-gray-300 hover:bg-gray-50"
+              >
+                Close
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
-}
+}   
 
+      
+      
+    
+  
 /*
 =====================================
 TESTS (Vitest + React Testing Library)
