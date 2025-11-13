@@ -82,8 +82,13 @@ const StallsMap: React.FC = () => {
 
   const handleConfirm = () => {
     if (!selectedStall) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
 
-    console.log("✅ Stall booked:", selectedStall?.name);
+    console.log("Stall booked:", selectedStall?.name);
     setShowModal(false);
   };
 
