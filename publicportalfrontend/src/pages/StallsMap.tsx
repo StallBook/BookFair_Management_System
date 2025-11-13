@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import logo from "../assets/lg.png";
 import { useNavigate } from "react-router-dom";
 import { createReservationService } from "../services/ReservationService";
+import { getAllStalls } from "../services/StallService";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -34,13 +35,14 @@ const StallsMap: React.FC = () => {
 
   useEffect(() => {
     const fetchStalls = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/stalls/stalls/all-stalls`);
-        setStalls(res.data.data);
-      } catch (error) {
-        console.error("Error fetching stalls:", error);
+      const res = await getAllStalls();
+      if (res.message === "success") {
+        setStalls(res.data);
+      } else {
+        console.error(res.error);
       }
     };
+
     fetchStalls();
   }, []);
 
