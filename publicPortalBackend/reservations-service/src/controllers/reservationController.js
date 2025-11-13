@@ -6,7 +6,6 @@ import {
     getReservationById
 } from "../services/reservationService.js";
 
-
 export const createReservationHandler = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -17,12 +16,20 @@ export const createReservationHandler = async (req, res) => {
         }
 
         const reservation = await createReservation({ authHeader, stallIds });
-        return res.status(201).json({ reservation });
+        return res.status(201).json({ message: "success", reservation });
     } catch (err) {
-        console.error("createReservation failed:", err.response?.data || err.message || err);
-        throw err;
+        console.error("createReservation failed:", err.message || err);
+        const statusCode =
+            err.message?.includes("Unauthorized") ? 401 :
+                err.message?.includes("not found") ? 404 :
+                    err.message?.includes("limit exceeded") ? 400 :
+                        err.message?.includes("already reserved") ? 400 :
+                            500;
+
+        return res.status(statusCode).json({ error: err.message || "Failed to create reservation" });
     }
 };
+
 
 export const cancelReservationHandler = async (req, res) => {
     try {
