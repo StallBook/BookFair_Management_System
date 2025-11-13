@@ -72,7 +72,7 @@ const AddGenres = () => {
             {/* Main Content */}
             <main className="flex-1 flex flex-col p-6 overflow-auto">
                 {/* Publisher/Vendor Card */}
-                <div className="bg-white rounded-xl shadow-lg p-6 mb-4 flex-1 flex flex-col">
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-4 flex-1 flex flex-col text-left">
                     <h2 className="text-2xl font-bold mb-4">Publisher / Vendor Details</h2>
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold mb-2">Name</label>
@@ -97,7 +97,7 @@ const AddGenres = () => {
                 </div>
 
                 {/* Add Genre Card */}
-                <div className="bg-white rounded-xl shadow-lg p-6 mb-4 flex-1 flex flex-col">
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-4 flex-1 flex flex-col text-left">
                     <h2 className="text-2xl font-bold mb-4">Add Genre</h2>
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold mb-2">Genre Name</label>
