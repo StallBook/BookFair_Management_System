@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import logo from "../assets/lg.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -24,41 +24,6 @@ interface Stall {
     reservedByReservationId?: string | null;
     reservedAt?: string | null;
 }
-
-const stallsData: Stall[] = [
-    {
-        _id: "1",
-        name: "A1",
-        size: "small",
-        dimensions: { width: 2, length: 2 },
-        map: { x: 20, y: 40, w: 80, h: 80 },
-        status: "available",
-    },
-    {
-        _id: "2",
-        name: "A2",
-        size: "medium",
-        dimensions: { width: 3, length: 2 },
-        map: { x: 120, y: 40, w: 100, h: 100 },
-        status: "reserved",
-    },
-    {
-        _id: "3",
-        name: "A3",
-        size: "large",
-        dimensions: { width: 4, length: 3 },
-        map: { x: 240, y: 40, w: 120, h: 120 },
-        status: "cancelled",
-    },
-    {
-        _id: "4",
-        name: "B1",
-        size: "small",
-        dimensions: { width: 2, length: 2 },
-        map: { x: 20, y: 180, w: 80, h: 80 },
-        status: "available",
-    },
-];
 
 const getStatusColor = (status: Stall["status"]) => {
     switch (status) {
@@ -92,6 +57,26 @@ const StallsMap: React.FC = () => {
 
         fetchStalls();
     }, []);
+
+    const randomizedStalls = useMemo(() => {
+        const shuffled = [...stalls].sort(() => Math.random() - 0.5);
+
+        // Define map area (e.g., 20x20 units)
+        const maxX = 20;
+        const maxY = 20;
+
+        // Assign semi-random positions with small spacing
+        return shuffled.map((stall, index) => ({
+            ...stall,
+            map: {
+                x: Math.floor(Math.random() * maxX),
+                y: Math.floor(Math.random() * maxY),
+                w: stall.size === "small" ? 2 : stall.size === "medium" ? 3 : 4,
+                h: stall.size === "small" ? 2 : stall.size === "medium" ? 3 : 4,
+            },
+        }));
+    }, [stalls]);
+
     const navigate = useNavigate();
 
     const handleBookClick = () => {
@@ -148,34 +133,47 @@ const StallsMap: React.FC = () => {
             {/* Main Area */}
             <main className="flex-1 flex flex-col md:flex-row overflow-auto p-4 md:p-6 mt-14 md:mt-0">
                 {/* Stall Map */}
-                <div className="flex-1 relative bg-gray-100 shadow-inner rounded-lg min-h-[700px] overflow-hidden p-4">
-                    {stalls.map((stall) => (
-                        <div
-                            key={stall._id || stall.name}
-                            onClick={() =>
-                                stall.status === "available" && setSelectedStall(stall)
-                            }
-                            className={`absolute border-2 border-gray-400 rounded-lg text-center font-semibold flex items-center justify-center transition-all duration-200
-        ${stall.status === "reserved"
-                                    ? "bg-gray-400 text-white cursor-not-allowed"
-                                    : stall.status === "available"
-                                        ? "bg-white hover:bg-blue-100 cursor-pointer text-gray-800"
-                                        : "bg-red-200"
+                <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                    <div
+                        className="relative rounded-lg p-4 bg-white shadow-lg"
+                        style={{
+                            width: "700px",
+                            height: "600px",
+                            position: "relative",
+                            margin: "40px",
+                            overflow: "hidden",
+                        }}
+                    >
+                        {randomizedStalls.map((stall) => (
+                            <div
+                                key={stall.name}
+                                onClick={() =>
+                                    stall.status !== "reserved" && setSelectedStall(stall)
                                 }
-        ${selectedStall?._id === stall._id ? "ring-4 ring-blue-500" : ""}
-      `}
-                            style={{
-                                left: `${stall.map.x * 35}px`,
-                                top: `${stall.map.y * 35}px`,
-                                width: `${stall.map.w * 25}px`,
-                                height: `${stall.map.h * 25}px`,
-                            }}
-                        >
-                            {stall.name}
-                        </div>
-                    ))}
+                                className={`absolute border border-gray-400 rounded-lg text-center font-semibold flex items-center justify-center cursor-pointer transition-all duration-200
+              ${stall.size === "small"
+                                        ? "bg-blue-100 hover:bg-blue-200"
+                                        : stall.size === "medium"
+                                            ? "bg-green-100 hover:bg-green-200"
+                                            : "bg-yellow-100 hover:bg-yellow-200"
+                                    }
+              ${selectedStall?.name === stall.name
+                                        ? "ring-4 ring-blue-400"
+                                        : ""
+                                    }
+            `}
+                                style={{
+                                    left: `${stall.map.x * 30}px`,
+                                    top: `${stall.map.y * 25}px`,
+                                    width: `${stall.map.w * 18}px`,
+                                    height: `${stall.map.h * 18}px`,
+                                }}
+                            >
+                                {stall.name}
+                            </div>
+                        ))}
+                    </div>
                 </div>
-
                 {/* Stall Details */}
                 <div className="w-full md:w-80 mt-6 md:mt-0 md:ml-6 bg-white shadow-xl rounded-2xl p-6">
                     {selectedStall ? (
