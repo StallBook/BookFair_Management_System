@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import logo from "../assets/lg.png";
 import { useNavigate } from "react-router-dom";
+import { createReservationService } from "../services/ReservationService";
 
 interface Stall {
   _id: string;
@@ -23,8 +24,8 @@ interface Stall {
 
 const stallsData: Stall[] = [
   {
-    _id: "1",
-    name: "A1",
+    _id: "6915647da24ed65471004cf4",
+    name: "A",
     size: "small",
     dimensions: { width: 2, length: 2 },
     map: { x: 20, y: 40, w: 80, h: 80 },
@@ -80,13 +81,14 @@ const StallsMap: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedStall) return;
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Please login first");
       return;
     }
+    const res = await createReservationService([selectedStall._id], token);
 
     console.log("Stall booked:", selectedStall?.name);
     setShowModal(false);
