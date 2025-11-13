@@ -30,7 +30,6 @@ export const createReservationHandler = async (req, res) => {
     }
 };
 
-
 export const cancelReservationHandler = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
