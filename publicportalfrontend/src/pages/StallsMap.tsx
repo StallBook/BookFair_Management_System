@@ -148,22 +148,27 @@ const StallsMap: React.FC = () => {
             {/* Main Area */}
             <main className="flex-1 flex flex-col md:flex-row overflow-auto p-4 md:p-6 mt-14 md:mt-0">
                 {/* Stall Map */}
-                <div className="flex-1 relative bg-white shadow-inner rounded-lg min-h-[500px] overflow-hidden">
-                    {stallsData.map((stall) => (
+                <div className="flex-1 relative bg-gray-100 shadow-inner rounded-lg min-h-[700px] overflow-hidden p-4">
+                    {stalls.map((stall) => (
                         <div
-                            key={stall._id}
+                            key={stall._id || stall.name}
                             onClick={() =>
                                 stall.status === "available" && setSelectedStall(stall)
                             }
-                            className={`absolute border border-gray-700 rounded-lg text-center text-white font-semibold flex items-center justify-center transition-all duration-200 ${getStatusColor(
-                                stall.status
-                            )} ${selectedStall?._id === stall._id ? "ring-4 ring-blue-400" : ""
-                                }`}
+                            className={`absolute border-2 border-gray-400 rounded-lg text-center font-semibold flex items-center justify-center transition-all duration-200
+        ${stall.status === "reserved"
+                                    ? "bg-gray-400 text-white cursor-not-allowed"
+                                    : stall.status === "available"
+                                        ? "bg-white hover:bg-blue-100 cursor-pointer text-gray-800"
+                                        : "bg-red-200"
+                                }
+        ${selectedStall?._id === stall._id ? "ring-4 ring-blue-500" : ""}
+      `}
                             style={{
-                                left: `${stall.map.x}px`,
-                                top: `${stall.map.y}px`,
-                                width: `${stall.map.w}px`,
-                                height: `${stall.map.h}px`,
+                                left: `${stall.map.x * 35}px`,
+                                top: `${stall.map.y * 35}px`,
+                                width: `${stall.map.w * 25}px`,
+                                height: `${stall.map.h * 25}px`,
                             }}
                         >
                             {stall.name}
