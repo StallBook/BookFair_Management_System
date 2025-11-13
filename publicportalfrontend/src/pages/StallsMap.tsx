@@ -83,22 +83,24 @@ const StallsMap: React.FC = () => {
 
   const handleConfirm = async () => {
     if (!selectedStall) return;
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Please login first");
-      return;
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
+      const res = await createReservationService([selectedStall._id], token);
+      if (res.message === "success") {
+        alert(` Reservation confirmed for satll ${selectedStall.name}!`);
+        // need to refresh the stall status after booking
+        setShowModal(false);
+      } else {
+        alert(`${res.error}`);
+      }
+    } catch (err: any) {
+      console.error("Booking failed:", err);
+      alert("Something went wrong while booking. Please try again.");
     }
-    const res = await createReservationService([selectedStall._id], token);
-    if (res.message === "success") {
-      alert(` Reservation confirmed for satll ${selectedStall.name}!`);
-      // need to refresh the stall status after booking
-      setShowModal(false);
-    } else {
-      alert(`${res.error}`);
-    }
-
-    console.log("Stall booked:", selectedStall?.name);
-    setShowModal(false);
   };
 
   const handleCancel = () => {
