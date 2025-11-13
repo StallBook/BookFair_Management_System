@@ -10,6 +10,7 @@ const stalls = [
   {
     name: "A",
     size: "small",
+
     dimensions: { width: 2, length: 2 },
     map: { x: 0, y: 0, w: 2, h: 2 },
   },
