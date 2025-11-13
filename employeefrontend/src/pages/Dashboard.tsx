@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { JSX } from "react";
+import bg from "../assets/bg1.png";
+
 
 
 export type Status = "available" | "reserved";
@@ -235,14 +237,14 @@ export default function Stalls(): JSX.Element {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-200">
       {/* Top bar */}
-      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
+      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-gray-400 border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
           <div className="font-bold tracking-tight text-xl">StallBook Dashboard</div>
           <div className="ml-auto flex items-center gap-2">
             <button
-              className="text-sm text-gray-600 hover:text-black px-3 py-1.5 rounded-lg hover:bg-gray-100"
+              className="text-sm text-gray-800 fontweight-medium font-semibold hover:text-black px-3 py-1.5 rounded-lg hover:bg-gray-100"
               onClick={goBack}
             >
               ← Back
@@ -256,7 +258,12 @@ export default function Stalls(): JSX.Element {
           </div>
         </div>
       </header>
-
+ <div
+    className="relative min-h-screen bg-gray-50 bg-cover bg-center"
+    style={{ backgroundImage: `url(${bg})` }}
+  >
+    {/* Low-transparency overlay to fade background image */}
+    <div className="absolute inset-0 bg-white/20" />
       {/* Controls */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row md:items-center gap-3">
@@ -312,7 +319,7 @@ export default function Stalls(): JSX.Element {
           )}
         </div>
       </div>
-
+</div>
      {/* Drawer / Slide-over */}
       {active && (
         <div className="fixed inset-0 z-40">
