@@ -132,48 +132,69 @@ const StallsMap: React.FC = () => {
 
             {/* Main Area */}
             <main className="flex-1 flex flex-col md:flex-row overflow-auto p-4 md:p-6 mt-14 md:mt-0">
-                {/* Stall Map */}
-                <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                    <div
-                        className="relative rounded-lg p-4 bg-white shadow-lg"
-                        style={{
-                            width: "700px",
-                            height: "600px",
-                            position: "relative",
-                            margin: "40px",
-                            overflow: "hidden",
-                        }}
-                    >
-                        {randomizedStalls.map((stall) => (
-                            <div
-                                key={stall.name}
-                                onClick={() =>
-                                    stall.status !== "reserved" && setSelectedStall(stall)
-                                }
-                                className={`absolute border border-gray-400 rounded-lg text-center font-semibold flex items-center justify-center cursor-pointer transition-all duration-200
-              ${stall.size === "small"
-                                        ? "bg-blue-100 hover:bg-blue-200"
-                                        : stall.size === "medium"
-                                            ? "bg-green-100 hover:bg-green-200"
-                                            : "bg-yellow-100 hover:bg-yellow-200"
-                                    }
-              ${selectedStall?.name === stall.name
-                                        ? "ring-4 ring-blue-400"
-                                        : ""
-                                    }
-            `}
-                                style={{
-                                    left: `${stall.map.x * 30}px`,
-                                    top: `${stall.map.y * 25}px`,
-                                    width: `${stall.map.w * 18}px`,
-                                    height: `${stall.map.h * 18}px`,
-                                }}
-                            >
-                                {stall.name}
+                <div className="flex flex-col md:flex-col ">
+                    {/* Stall Map */}
+                    <div className="flex flex-col">
+                        <div className="text-2xl font-bold mb-4 text-center">
+                            Book Fair Stalls Map
+                        </div>
+                        <div className="flex flex-row justify-around mb-4 gap-4">
+                            <div className="w-40 h-20 bg-slate-400 rounded-lg flex flex-col items-center justify-center">
+                                <h3>total stalls</h3>
+                                <label>{stalls.length}</label>
                             </div>
-                        ))}
+                            <div className="w-40 h-20 bg-green-400 rounded-lg flex flex-col items-center justify-center ">
+                                <h3>available</h3>
+                                <label>{stalls.filter(stall => stall.status === "available").length}</label>
+                            </div>
+                            <div className="w-40 h-20 bg-red-400 rounded-lg flex flex-col items-center justify-center ">
+                                <h3>reserved</h3>
+                                <label>{stalls.filter(stall => stall.status === "reserved").length}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex justify-center items-center bg-gray-100">
+                        <div
+                            className="relative rounded-lg p-4 bg-white shadow-lg"
+                            style={{
+                                width: "700px",
+                                height: "600px",
+                                position: "relative",
+                                overflow: "hidden",
+                            }}
+                        >
+                            {randomizedStalls.map((stall) => (
+                                <div
+                                    key={stall.name}
+                                    onClick={() =>
+                                        stall.status !== "reserved" && setSelectedStall(stall)
+                                    }
+                                    className={`absolute border border-gray-400 rounded-lg text-center font-semibold flex items-center justify-center cursor-pointer transition-all duration-200
+              ${stall.size === "small"
+                                            ? "bg-blue-100 hover:bg-blue-200"
+                                            : stall.size === "medium"
+                                                ? "bg-green-100 hover:bg-green-200"
+                                                : "bg-yellow-100 hover:bg-yellow-200"
+                                        }
+              ${selectedStall?.name === stall.name
+                                            ? "ring-4 ring-blue-400"
+                                            : ""
+                                        }
+            `}
+                                    style={{
+                                        left: `${stall.map.x * 30}px`,
+                                        top: `${stall.map.y * 25}px`,
+                                        width: `${stall.map.w * 18}px`,
+                                        height: `${stall.map.h * 18}px`,
+                                    }}
+                                >
+                                    {stall.name}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
+
                 {/* Stall Details */}
                 <div className="w-full md:w-80 mt-6 md:mt-0 md:ml-6 bg-white shadow-xl rounded-2xl p-6">
                     {selectedStall ? (
