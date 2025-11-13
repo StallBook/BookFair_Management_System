@@ -34,17 +34,17 @@ const StallsMap: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchStalls = async () => {
-      const res = await getAllStalls();
-      if (res.message === "success") {
-        setStalls(res.data);
-      } else {
-        console.error(res.error);
-      }
-    };
-
     fetchStalls();
   }, []);
+
+  const fetchStalls = async () => {
+    const res = await getAllStalls();
+    if (res.message === "success") {
+      setStalls(res.data);
+    } else {
+      console.error(res.error);
+    }
+  };
 
   const handleBookClick = () => {
     setShowModal(true);
@@ -61,8 +61,9 @@ const StallsMap: React.FC = () => {
       const res = await createReservationService([selectedStall._id], token);
       if (res.message === "success") {
         alert(` Reservation confirmed for satll ${selectedStall.name}!`);
-        // need to refresh the stall status after booking
         setShowModal(false);
+        await fetchStalls();
+        setSelectedStall(null);
       } else {
         alert(`${res.error}`);
       }
