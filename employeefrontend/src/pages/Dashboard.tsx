@@ -295,7 +295,24 @@ export default function Stalls(): JSX.Element {
             )}
           </div>
         </div>
+       {/* Content */}
+        <div className="mt-5">
+          {loading ? (
+            <div className="text-gray-600">Loading stalls…</div>
+          ) : error ? (
+            <div className="text-red-600">{error}</div>
+          ) : filtered.length === 0 ? (
+            <div className="text-gray-600">No stalls match your filters.</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filtered.map((stall) => (
+                <StallCard key={stall.id} stall={stall} onOpen={setActive} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+
         
 
       
