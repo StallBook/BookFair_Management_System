@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     },
   },
   googleId: { type: String, unique: true, sparse: true }, 
+  genres:{
+    type:[String],
+    default:[]
+  }
 });
 
 userSchema.plugin(AutoIncrement, { inc_field: "userID" });
