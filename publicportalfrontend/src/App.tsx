@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import { ToastContainer } from "react-toastify";
 import StallsMap from "./pages/StallsMap";
+import AddGenres from "./pages/AddGenres";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/stalls-map" element={<StallsMap />} />
+          <Route path="/add-genres" element={<AddGenres />} />
         </Routes>
       </BrowserRouter>
     </div>
