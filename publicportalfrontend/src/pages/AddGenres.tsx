@@ -243,7 +243,7 @@ const AddGenres = () => {
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-6 flex-1 mt-2 ">
-          <DataTable fetchData={fetchGenreDetail} genreDetails={genreDetails} />
+          <DataTable fetchData={fetchGenreDetail} genreDetails={genreDetails} genreTypes={genreTypes} />
         </div>
       </main>
     </div>
