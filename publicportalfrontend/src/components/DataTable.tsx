@@ -106,6 +106,7 @@ export default function DataTable({
       dataIndex: "description",
       key: "description",
       width: "33.33%",
+      render: (text: string) => (text ? text : <i>-</i>),
     },
     {
       title: "Action",
@@ -136,6 +137,13 @@ export default function DataTable({
 
   return (
     <>
+      <div className="mb-4">
+        <h2 className="text-[20px] font-bold text-blue-900">Manage Genres</h2>
+        <p className="text-gray-500 mt-1">
+          View, edit, or delete existing genres below.
+        </p>
+      </div>
+
       <Table
         columns={columns}
         dataSource={genreDetails}
