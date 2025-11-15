@@ -36,7 +36,7 @@ const Signin = () => {
           localStorage.setItem("token", response.token);
         }
         toast.success("Welcome back! You’ve successfully signed in.");
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/stalls-map"), 2000);
       } else {
         toast.error(response.error || "Signin failed. Try again!");
       }

@@ -44,6 +44,48 @@ const StallsMap: React.FC = () => {
     }
   };
 
+    const handleBookClick = () => setShowModal(true);
+    const handleConfirm = () => {
+        setShowModal(false); // close the modal
+        navigate("/add-genres"); // navigate to /add-genres
+    };
+    const handleCancel = () => setShowModal(false);
+
+    return (
+        <div className="flex flex-col md:flex-row h-screen bg-gray-100 overflow-hidden">
+            {/* Sidebar */}
+            <aside
+                className={`bg-gray-800 text-white p-4 md:p-6 transition-all duration-300
+        ${menuOpen ? "block" : "hidden"} md:flex md:flex-col md:w-56 fixed md:relative z-50 h-full`}
+            >
+                <img
+                    src={logo}
+                    alt="Logo"
+                    className="w-32 mb-8 mx-auto md:mx-0 cursor-pointer"
+                    onClick={() => navigate("/")}
+                />
+                <nav className="space-y-3 w-full">
+                    <button
+                        className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
+                        onClick={() => navigate("/")}
+                    >
+                        Dashboard
+                    </button>
+                    <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
+                        onClick={() => navigate("/stalls-map")}
+                    >
+                        Stalls
+                    </button>
+                    <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
+                        onClick={() => navigate("/add-genres")}
+                    >
+                        Add Genres
+                    </button>
+                    <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
+                        Settings
+                    </button>
+                </nav>
+            </aside>
   const handleBookClick = () => {
     setShowModal(true);
   };
