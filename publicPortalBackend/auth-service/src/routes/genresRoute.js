@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.get("/types",genreContoller.getGenres)
 router.post("/add",genreContoller.handleAddGenres);
+router.get("/userGenres",genreContoller.handleGetUserGenres);
 
 export default router;
