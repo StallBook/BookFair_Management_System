@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 import { Table, Divider, Tooltip, Modal, Form, Input } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import {
-  deleteGenreService,
-  updateGenreService,
-} from "../services/AddGenre";
+import { deleteGenreService, updateGenreService } from "../services/AddGenre";
 import { toast } from "react-toastify";
 
 interface DataType {
@@ -32,10 +29,7 @@ export default function DataTable({
 
   const handleDelete = async (userID: number, genreID: string) => {
     try {
-      console.log(genreID);
-      console.log("fuserID", userID);
       const response = await deleteGenreService(userID, genreID);
-      console.log("Delete Genre Response:", response);
       if (response.message === "success") {
         toast.success("Genre deleted successfully");
         await fetchData();
@@ -58,7 +52,6 @@ export default function DataTable({
   const handleEditSave = async () => {
     try {
       const values = await form.validateFields();
-
       const payload = {
         userID: Number(userID),
         genreID: editingRecord!._id,
@@ -101,7 +94,6 @@ export default function DataTable({
       key: "action",
       width: "33.33%",
       render: (_, record: DataType) => {
-        console.log("Delete", record);
         return (
           <>
             <Tooltip title={`Edit ${record.name}`}>
@@ -123,11 +115,9 @@ export default function DataTable({
       },
     },
   ];
-  console.log("Genre Details in DataTable:", genreDetails);
 
   return (
     <>
-      {" "}
       <Table
         columns={columns}
         dataSource={genreDetails}
@@ -164,11 +154,7 @@ export default function DataTable({
             <Input placeholder="Enter genre name" />
           </Form.Item>
 
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please enter description" }]}
-          >
+          <Form.Item name="description" label="Description">
             <Input.TextArea placeholder="Enter description" rows={4} />
           </Form.Item>
         </Form>

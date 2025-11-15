@@ -35,7 +35,6 @@ const AddGenres = () => {
   const fetchGenreTypes = async () => {
     try {
       const response = await getGenreListService();
-      console.log("Genre Types Response:", response);
       if (response.message === "success") {
         setGenreTypes(response.genreTypes || []);
       } else {
@@ -67,7 +66,6 @@ const AddGenres = () => {
         ],
       };
       const response = await genreAddService(data);
-      console.log("Genre Add Response:", response);
       if (response.message === "success") {
         toast.success("Genre added successfully!");
         fetchGenreDetail();
@@ -87,13 +85,12 @@ const AddGenres = () => {
   const fetchGenreDetail = async () => {
     try {
       const response = await getGenreDetailService({ userID: Number(userID) });
-      console.log("Genre Details Response:", response);
 
       if (response.message === "success") {
         const data = (response.genres || []).map(
           (item: any, index: number) => ({
             key: String(index),
-             _id: item._id,  
+            _id: item._id,
             name: item.name,
             description: item.description,
           })
