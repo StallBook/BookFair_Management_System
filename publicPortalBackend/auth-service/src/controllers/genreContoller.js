@@ -48,7 +48,12 @@ const handleGetUserGenres = async (req, res) => {
 
 const handleDeleteGenre = async (req, res) => {
     const { userID, genreID } = req.body;
-
+    if (!genreID) { 
+        return res.status(400).json({ error: "genreID is required." });
+    }
+    if (!userID) {
+        return res.status(400).json({ error: "userID is required." });
+    }
     try {
         const user = await genreService.deleteGenre(userID, genreID);
         return res.status(200).json({ message: "success", user });

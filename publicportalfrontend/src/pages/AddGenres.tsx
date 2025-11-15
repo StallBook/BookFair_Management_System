@@ -14,6 +14,7 @@ interface DataType {
   key: string;
   name: string;
   description: string;
+  _id: string;
 }
 
 const AddGenres = () => {
@@ -92,6 +93,7 @@ const AddGenres = () => {
         const data = (response.genres || []).map(
           (item: any, index: number) => ({
             key: String(index),
+             _id: item._id,  
             name: item.name,
             description: item.description,
           })

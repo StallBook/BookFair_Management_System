@@ -94,3 +94,32 @@ export async function getGenreDetailService(genreUserData: GenreUserPayload): Pr
     };
   }
 }
+
+export async function deleteGenreService(userID:number,genreID: string): Promise<any> {
+  try {
+    const response = await fetch(`${API_URL}/auth/genres/delete`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userID:userID , genreID: genreID }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        message: "error",
+        error: data.error || "Deleting genre failed",
+      };
+    }
+
+    return { message: "success", ...data };
+  } catch (error: any) {
+    console.error("Fetch error in deleteGenreService:", error);
+    return {
+      message: "error",
+      error: "Network error. Please try again later.",
+    };
+  }
+}
