@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/lg.png";
-import { genreAddService } from "../services/AddGenre";
+import { genreAddService, getGenreListService } from "../services/AddGenre";
 import { toast } from "react-toastify";
 
 const AddGenres = () => {
@@ -11,11 +11,32 @@ const AddGenres = () => {
   const [genreName, setGenreName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [genreTypes, setGenreTypes] = useState<string[]>([]);
   const userID = localStorage.getItem("userID");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchGenreTypes();
+  }, []);
+  const fetchGenreTypes = async () => {
+    try {
+      const response = await getGenreListService();
+      console.log("Genre Types Response:", response);
+      if (response.message === "success") {
+        setGenreTypes(response.genreTypes || []);
+      } else {
+        toast.error(response.error || "Failed to fetch genre types.");
+        return [];
+      }
+    } catch (error) {
+      toast.error("Something went wrong while fetching genre types.");
+      console.error(error);
+      return [];
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
-     e.preventDefault(); 
+    e.preventDefault();
     if (!genreName.trim()) {
       toast.error("Genre name is required!");
       return;
@@ -140,13 +161,21 @@ const AddGenres = () => {
               <label className="block text-gray-700 font-semibold mb-2">
                 Genre Name
               </label>
-              <input
-                type="text"
+              <select
                 value={genreName}
                 onChange={(e) => setGenreName(e.target.value)}
-                placeholder="Enter genre name"
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              >
+                <option value="" disabled hidden>
+                  Select a Genre
+                </option>
+
+                {(genreTypes || []).map((genre: string, index: number) => (
+                  <option key={index} value={genre}>
+                    {genre}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2">
@@ -162,7 +191,7 @@ const AddGenres = () => {
             </div>
             <div className="flex justify-between">
               <button
-              type="submit"
+                type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition"
                 disabled={loading}
               >

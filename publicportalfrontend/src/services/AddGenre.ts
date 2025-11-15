@@ -33,3 +33,31 @@ export async function genreAddService(genreData: GenrePayload): Promise<any> {
     };
   }
 }
+
+export async function getGenreListService(): Promise<any> {
+  try {
+    const response = await fetch(`${API_URL}/auth/genres/types`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        message: "error",
+        error: data.error || "Fetching genre list failed",
+      };
+    }
+
+    return { message: "success", ...data };
+  } catch (error: any) {
+    console.error("Fetch error in getGenreListService:", error);
+    return {
+      message: "error",
+      error: "Network error. Please try again later.",
+    };
+  }
+}
