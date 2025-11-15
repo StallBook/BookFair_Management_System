@@ -7,8 +7,6 @@ import { userSignUpService } from "../services/User";
 import { toast } from "react-toastify";
 import { renderError } from "../helper/ErrorHelper";
 import { validateField } from "../helper/ValidationHelper";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import GoogleLogin from "./GoogleLogin";
 
 const { Text } = Typography;
 interface User {
