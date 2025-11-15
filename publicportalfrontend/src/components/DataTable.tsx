@@ -28,14 +28,27 @@ export default function DataTable({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<DataType | null>(null);
   const [isChanged, setIsChanged] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deletingRecord, setDeletingRecord] = useState<DataType | null>(null);
   const [form] = Form.useForm();
+  const openDeleteModal = (record: DataType) => {
+    setDeletingRecord(record);
+    setIsDeleteModalOpen(true);
+  };
 
-  const handleDelete = async (userID: number, genreID: string) => {
+  const handleDeleteConfirm = async () => {
+    if (!deletingRecord) return;
+
     try {
-      const response = await deleteGenreService(userID, genreID);
+      const response = await deleteGenreService(
+        Number(userID),
+        deletingRecord._id
+      );
       if (response.message === "success") {
         toast.success("Genre deleted successfully");
         await fetchData();
+        setIsDeleteModalOpen(false);
+        setDeletingRecord(null);
       } else {
         toast.error("Failed to delete genre");
       }
@@ -43,6 +56,7 @@ export default function DataTable({
       toast.error("An unexpected error occurred while deleting genre");
     }
   };
+
   const openEditModal = (record: DataType) => {
     setEditingRecord(record);
     form.setFieldsValue({
@@ -111,7 +125,7 @@ export default function DataTable({
             <Tooltip title="Delete">
               <DeleteOutlined
                 style={{ color: "red", cursor: "pointer" }}
-                onClick={() => handleDelete(Number(userID), record._id)}
+                onClick={() => openDeleteModal(record)}
               />
             </Tooltip>
           </>
@@ -186,6 +200,51 @@ export default function DataTable({
             <Input.TextArea placeholder="Enter description" rows={4} />
           </Form.Item>
         </Form>
+      </Modal>
+      <Modal
+        title={<span className="font-bold text-lg">Delete Genre</span>}
+        open={isDeleteModalOpen}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        onOk={handleDeleteConfirm}
+        okText="Delete"
+        okButtonProps={{ danger: true }}
+        cancelText="Cancel"
+        centered
+      >
+        <div style={{ padding: "10px 0" }}>
+          <p>
+            Are you sure you want to delete the following genre?
+            <span style={{ fontWeight: "bold", color: "red" }}>
+              {" "}
+              This action cannot be undone!
+            </span>
+          </p>
+
+          {deletingRecord && (
+            <div
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: 8,
+                padding: 12,
+                marginTop: 10,
+                backgroundColor: "#f9f9f9",
+              }}
+            >
+              <p>
+                <b>Name:</b> {deletingRecord.name}
+              </p>
+              <p>
+                <b>Description:</b>{" "}
+                {deletingRecord.description || "No description"}
+              </p>
+            </div>
+          )}
+
+          <p style={{ marginTop: 10, color: "red", fontWeight: "bold" }}>
+            ⚠ Warning: Deleting this genre will remove it permanently from the
+            system.
+          </p>
+        </div>
       </Modal>
     </>
   );
