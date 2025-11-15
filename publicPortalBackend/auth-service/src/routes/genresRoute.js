@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get("/types",genreContoller.getGenres)
 router.post("/add",genreContoller.handleAddGenres);
-router.get("/userGenres",genreContoller.handleGetUserGenres);
+router.post("/userGenres",genreContoller.handleGetUserGenres);
 router.delete("/delete",genreContoller.handleDeleteGenre);
-router.put("/update",genreContoller.handleUpadteGenres);
+router.put("/update",genreContoller.handleUpdateGenres);
 export default router;

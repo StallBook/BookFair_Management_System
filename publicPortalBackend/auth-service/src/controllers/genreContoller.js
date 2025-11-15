@@ -17,7 +17,7 @@ const getGenres = async (req, res) => {
       "Religious",
       "Other",
     ];
-    return res.status(200).json(genreTypes);
+    return res.status(200).json({ message: "success", genreTypes });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -30,7 +30,7 @@ const handleAddGenres = async (req, res) => {
   }
   try {
     const user = await genreService.addGenre(userID, genres);
-    return res.status(200).json({ message: "Genres added successfully", user });
+    return res.status(200).json({ message: "success", user });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -40,7 +40,7 @@ const handleGetUserGenres = async (req, res) => {
   const { userID } = req.body;
   try {
     const genres = await genreService.getUserGenres(userID);
-    return res.status(200).json({ genres });
+    return res.status(200).json({ message: "success", genres });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -48,23 +48,28 @@ const handleGetUserGenres = async (req, res) => {
 
 const handleDeleteGenre = async (req, res) => {
     const { userID, genreID } = req.body;
-
+    if (!genreID) { 
+        return res.status(400).json({ error: "genreID is required." });
+    }
+    if (!userID) {
+        return res.status(400).json({ error: "userID is required." });
+    }
     try {
         const user = await genreService.deleteGenre(userID, genreID);
-        return res.status(200).json({ message: "Genre deleted successfully", user });
+        return res.status(200).json({ message: "success", user });
     } catch (error) {          
         return res.status(500).json({ error: error.message });
     }
 };
 
-const handleUpadteGenres = async (req, res) => {
+const handleUpdateGenres = async (req, res) => {
     const { userID, genreID, genreData } = req.body;
     try {
         const user = await genreService.updateGenre(userID, genreID, genreData);
-        return res.status(200).json({ message: "Genre updated successfully", user });
+        return res.status(200).json({ message: "success", user });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 };
 
-export default { getGenres, handleAddGenres, handleGetUserGenres, handleDeleteGenre, handleUpadteGenres };
+export default { getGenres, handleAddGenres, handleGetUserGenres, handleDeleteGenre, handleUpdateGenres };

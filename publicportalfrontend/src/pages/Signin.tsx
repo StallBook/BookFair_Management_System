@@ -31,9 +31,14 @@ const Signin = () => {
         password: values.password,
       };
       const response = await userSignInService(data);
+      console.log("Signin Response:", response);
       if (response.message === "success") {
         if (response.token) {
           localStorage.setItem("token", response.token);
+        }
+        console.log("response.user:", response.user);
+        if (response.user) {
+          localStorage.setItem("userID", response.user.userID);
         }
         toast.success("Welcome back! You’ve successfully signed in.");
         setTimeout(() => navigate("/stalls-map"), 2000);
