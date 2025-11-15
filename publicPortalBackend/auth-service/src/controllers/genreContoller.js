@@ -57,6 +57,14 @@ const handleDeleteGenre = async (req, res) => {
     }
 };
 
+const handleUpadteGenres = async (req, res) => {
+    const { userID, genreID, genreData } = req.body;
+    try {
+        const user = await genreService.updateGenre(userID, genreID, genreData);
+        return res.status(200).json({ message: "Genre updated successfully", user });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
 
-
-export default { getGenres, handleAddGenres, handleGetUserGenres, handleDeleteGenre };
+export default { getGenres, handleAddGenres, handleGetUserGenres, handleDeleteGenre, handleUpadteGenres };

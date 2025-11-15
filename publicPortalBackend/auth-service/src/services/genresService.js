@@ -25,7 +25,7 @@ const getUserGenres = async (userID) => {
   return foundUser.genres;
 };
 
-export const deleteGenre = async (userID, genreID) => {
+const deleteGenre = async (userID, genreID) => {
     const updatedUser = await user.findOneAndUpdate(
         { userID },
         { $pull: { genres: { _id: genreID } } },
@@ -36,4 +36,23 @@ export const deleteGenre = async (userID, genreID) => {
     return updatedUser;
 };
 
-export default { addGenre, getUserGenres,deleteGenre };
+const updateGenre =async (userID, genreID, genreData) => {
+    const foundUser = await user.findOne({ userID });
+    if (!foundUser) {
+        throw new Error("User not found");
+    }
+     const genreExists = foundUser.genres.some(g => g._id.toString() === genreID);
+    if (!genreExists) {
+        throw new Error("Genre not found");
+    }
+    const updatedUser = await user.findOneAndUpdate(
+        { userID, "genres._id": genreID },
+        { $set: { "genres.$": genreData } },
+        { new: true }
+    );
+    return updatedUser;
+};
+
+
+
+export default { addGenre, getUserGenres,deleteGenre,updateGenre };
