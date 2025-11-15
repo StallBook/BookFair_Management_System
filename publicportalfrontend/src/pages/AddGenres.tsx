@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/lg.png";
 import { genreAddService, getGenreListService } from "../services/AddGenre";
 import { toast } from "react-toastify";
+import Banner from "../components/banner";
 
 const AddGenres = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -122,86 +123,93 @@ const AddGenres = () => {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col p-6 overflow-auto">
-        {/* Publisher/Vendor Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 flex-1 flex flex-col">
-          <h2 className="text-2xl font-bold mb-4">
-            Publisher / Vendor Details
-          </h2>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">
-              Name
-            </label>
-            <input
-              type="text"
-              value={publisherName}
-              onChange={(e) => setPublisherName(e.target.value)}
-              placeholder="Enter publisher/vendor name"
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">
-              Contact Details
-            </label>
-            <input
-              type="text"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-              placeholder="Enter contact details"
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
+        <Banner />
+        <div className="flex flex-col md:flex-row gap-4 mt-2">
+          {/* Publisher/Vendor Card */}
+          <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
+            <h2 className="text-2xl font-bold mb-4">
+              Publisher / Vendor Details
+            </h2>
 
-        {/* Add Genre Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 flex-1 flex flex-col">
-          <h2 className="text-2xl font-bold mb-4">Add Genre</h2>
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 font-semibold mb-2">
-                Genre Name
+              <label className="block text-gray-700 font-semibold mb-2 text-start">
+                Name
               </label>
-              <select
-                value={genreName}
-                onChange={(e) => setGenreName(e.target.value)}
+              <input
+                type="text"
+                value={publisherName}
+                onChange={(e) => setPublisherName(e.target.value)}
+                placeholder="Enter publisher/vendor name"
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="" disabled hidden>
-                  Select a Genre
-                </option>
+              />
+            </div>
 
-                {(genreTypes || []).map((genre: string, index: number) => (
-                  <option key={index} value={genre}>
-                    {genre}
-                  </option>
-                ))}
-              </select>
-            </div>
             <div className="mb-4">
-              <label className="block text-gray-700 font-semibold mb-2">
-                Description
+              <label className="block text-gray-700 font-semibold mb-2 text-start">
+                Contact Details
               </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Enter genre description"
-                rows={3}
+              <input
+                type="text"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                placeholder="Enter contact details"
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              ></textarea>
+              />
             </div>
-            <div className="flex justify-between">
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition"
-                disabled={loading}
-              >
-                {loading ? "Adding..." : "Add Genre"}
-              </button>
-              <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition">
-                View Added Genres
-              </button>
-            </div>
-          </form>
+          </div>
+
+          {/* Add Genre Card */}
+          <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
+            <h2 className="text-2xl font-bold mb-4">Add Genre</h2>
+
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2 text-start">
+                  Genre Name
+                </label>
+                <select
+                  value={genreName}
+                  onChange={(e) => setGenreName(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select a Genre</option>
+
+                  {(genreTypes || []).map((genre: string, index: number) => (
+                    <option key={index} value={genre}>
+                      {genre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2 text-start">
+                  Description
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Enter genre description"
+                  rows={3}
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ></textarea>
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition"
+                  disabled={loading}
+                >
+                  {loading ? "Adding..." : "Add Genre"}
+                </button>
+
+                <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+                  View Added Genres
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </main>
     </div>
