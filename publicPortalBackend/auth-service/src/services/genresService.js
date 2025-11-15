@@ -25,4 +25,15 @@ const getUserGenres = async (userID) => {
   return foundUser.genres;
 };
 
-export default { addGenre, getUserGenres };
+export const deleteGenre = async (userID, genreID) => {
+    const updatedUser = await user.findOneAndUpdate(
+        { userID },
+        { $pull: { genres: { _id: genreID } } },
+        { new: true }
+    );
+
+    if (!updatedUser) throw new Error("User not found");
+    return updatedUser;
+};
+
+export default { addGenre, getUserGenres,deleteGenre };
