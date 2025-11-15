@@ -123,3 +123,37 @@ export async function deleteGenreService(userID:number,genreID: string): Promise
     };
   }
 }
+
+interface UpdateGenreUserPayload {
+  userID: number;
+  genreID: string;
+  genreData: { name: string; description: string };
+}
+
+export async function updateGenreService(payload: UpdateGenreUserPayload): Promise<any> {
+  try {
+    const response = await fetch(`${API_URL}/auth/genres/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        message: "error",
+        error: data.error || "Updating genre failed",
+      };
+    }
+
+    return { message: "success", ...data };
+  } catch (error: any) {
+    console.error("Fetch error in updateGenreService:", error);
+    return {
+      message: "error",
+      error: "Network error. Please try again later.",
+    };
+  }
+}
