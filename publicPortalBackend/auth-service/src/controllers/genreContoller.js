@@ -1,3 +1,5 @@
+import genreService from "../services/genresService.js";
+
 const getGenres = async (req, res) => {
   try {
     const genreTypes = [
@@ -20,4 +22,20 @@ const getGenres = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-export default { getGenres };
+
+
+const handleAddGenres = async (req,res) =>{
+    const {userID,genres} = req.body;
+    if(!Array.isArray(genres) || genres.length === 0){
+        return res.status(400).json({error:"Genres is required."});
+    }
+    try{
+        const user =await genreService.addGenre(userID,genres);
+        return res.status(200).json({message:"Genres added successfully",user});
+    }catch(error){
+        return res.status(500).json({error:error.message});
+    }
+
+}
+
+export default { getGenres, handleAddGenres };

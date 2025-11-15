@@ -3,5 +3,6 @@ import genreContoller from '../controllers/genreContoller.js';
 const router = express.Router();
 
 router.get("/types",genreContoller.getGenres)
+router.post("/add",genreContoller.handleAddGenres);
 
 export default router;

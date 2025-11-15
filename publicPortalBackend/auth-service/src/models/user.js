@@ -10,14 +10,19 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: function () {
-      return !this.googleId; 
+      return !this.googleId;
     },
   },
-  googleId: { type: String, unique: true, sparse: true }, 
-  genres:{
-    type:[String],
-    default:[]
-  }
+  googleId: { type: String, unique: true, sparse: true },
+  genres: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      description: { type: String, default: "" },
+    },
+  ],
 });
 
 userSchema.plugin(AutoIncrement, { inc_field: "userID" });
