@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/lg.png";
-import { genreAddService, getGenreListService } from "../services/AddGenre";
+import {
+  genreAddService,
+  getGenreDetailService,
+  getGenreListService,
+} from "../services/AddGenre";
 import { toast } from "react-toastify";
 import Banner from "../components/banner";
+import DataTable from "../components/DataTable";
+
+interface DataType {
+  key: string;
+  name: string;
+  description: string;
+}
 
 const AddGenres = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,6 +24,7 @@ const AddGenres = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [genreTypes, setGenreTypes] = useState<string[]>([]);
+  const [genreDetails, setGenreDetails] = useState<DataType[]>([]);
   const userID = localStorage.getItem("userID");
   const navigate = useNavigate();
 
@@ -57,6 +69,7 @@ const AddGenres = () => {
       console.log("Genre Add Response:", response);
       if (response.message === "success") {
         toast.success("Genre added successfully!");
+        fetchGenreDetail();
         setGenreName("");
         setDescription("");
       } else {
@@ -67,6 +80,29 @@ const AddGenres = () => {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchGenreDetail = async () => {
+    try {
+      const response = await getGenreDetailService({ userID: Number(userID) });
+      console.log("Genre Details Response:", response);
+
+      if (response.message === "success") {
+        const data = (response.genres || []).map(
+          (item: any, index: number) => ({
+            key: String(index),
+            name: item.name,
+            description: item.description,
+          })
+        );
+        setGenreDetails(data);
+      } else {
+        toast.error(response.error || "Failed to fetch genre types.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong while fetching genre types.");
+      console.error(error);
     }
   };
 
@@ -203,13 +239,12 @@ const AddGenres = () => {
                 >
                   {loading ? "Adding..." : "Add Genre"}
                 </button>
-
-                <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition">
-                  View Added Genres
-                </button>
               </div>
             </form>
           </div>
+        </div>
+        <div className="bg-white rounded-xl shadow-lg p-6 flex-1 mt-2 ">
+          <DataTable fetchData={fetchGenreDetail} genreDetails={genreDetails} />
         </div>
       </main>
     </div>
