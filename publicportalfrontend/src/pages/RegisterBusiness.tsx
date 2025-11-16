@@ -91,7 +91,8 @@ const RegisterBusiness = () => {
           alt="Logo"
         />
         <h1 className="text-2xl md:text-3xl font-bold text-blue-800 mb-6">
-          Register Your Business
+            Register Your Publication / Bookstore
+
         </h1>
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -99,7 +100,7 @@ const RegisterBusiness = () => {
             <input
               type="text"
               name="businessName"
-              placeholder="Business Name"
+              placeholder="Publication or Bookstore Name"
               value={formValues.businessName}
               onChange={handleChange}
               className={`p-3 rounded-lg border ${
@@ -115,7 +116,7 @@ const RegisterBusiness = () => {
             <input
               type="text"
               name="ownerName"
-              placeholder="Owner Name"
+              placeholder="Owner or Representative Name"
               value={formValues.ownerName}
               onChange={handleChange}
               className={`p-3 rounded-lg border ${
@@ -131,7 +132,7 @@ const RegisterBusiness = () => {
             <input
               type="text"
               name="phoneNumber"
-              placeholder="Phone Number"
+              placeholder="Contact Number"
               value={formValues.phoneNumber}
               onChange={handleChange}
               className={`p-3 rounded-lg border ${
