@@ -41,7 +41,7 @@ const Signin = () => {
           localStorage.setItem("userID", response.user.userID);
         }
         toast.success("Welcome back! You’ve successfully signed in.");
-        setTimeout(() => navigate("/stalls-map"), 2000);
+        setTimeout(() => navigate("/add-genres"), 2000);
       } else {
         toast.error(response.error || "Signin failed. Try again!");
       }

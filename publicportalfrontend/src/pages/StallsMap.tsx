@@ -4,6 +4,23 @@ import { useNavigate } from "react-router-dom";
 import { createReservationService } from "../services/ReservationService";
 import { getAllStalls } from "../services/StallService";
 import { toast } from "react-toastify";
+import { Avatar, Dropdown, Menu } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+
+const menu = (
+  <Menu>
+    <Menu.Item key="logout">
+      <a
+        onClick={() => {
+          localStorage.clear();
+          window.location.href = "/";
+        }}
+      >
+        Logout
+      </a>
+    </Menu.Item>
+  </Menu>
+);
 
 interface Stall {
   _id: string;
@@ -98,9 +115,8 @@ const StallsMap: React.FC = () => {
       {/* Sidebar */}
       <aside
         className={`bg-gray-800 text-white p-4 md:p-6 transition-all duration-300
-        ${
-          menuOpen ? "block" : "hidden"
-        } md:flex md:flex-col md:w-56 fixed md:relative z-50 h-full`}
+    ${menuOpen ? "block" : "hidden"} 
+    md:flex md:flex-col md:w-56 fixed md:relative z-50 h-full`}
       >
         <img
           src={logo}
@@ -108,22 +124,40 @@ const StallsMap: React.FC = () => {
           className="w-32 mb-8 mx-auto md:mx-0 cursor-pointer"
           onClick={() => navigate("/")}
         />
-        <nav className="space-y-3 w-full">
-          <button
-            className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            Dashboard
-          </button>
-          <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
-            Stalls
-          </button>
-          <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
-            Bookings
-          </button>
-          <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
-            Settings
-          </button>
+
+        <nav className="space-y-3 w-full h-full flex flex-col justify-between">
+          <div>
+            <button
+              className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
+              onClick={() => navigate("/add-genres")}
+            >
+              Home
+            </button>
+            <button
+              className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              Dashboard
+            </button>
+            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer" onClick={() => navigate("/stalls-map")} >
+              Stalls
+            </button>
+            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer">
+              Bookings
+            </button>
+            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer">
+              Settings
+            </button>
+          </div>
+
+          <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">
+            <div
+              onClick={(e) => e.preventDefault()}
+              className="flex items-center justify-start mt-4 cursor-pointer"
+            >
+              <Avatar size="large" icon={<UserOutlined />} />
+            </div>
+          </Dropdown>
         </nav>
       </aside>
 
@@ -292,4 +326,4 @@ const StallsMap: React.FC = () => {
   );
 };
 
-export default StallsMap;  
+export default StallsMap;

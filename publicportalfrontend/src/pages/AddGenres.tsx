@@ -9,6 +9,9 @@ import {
 import { toast } from "react-toastify";
 import Banner from "../components/banner";
 import DataTable from "../components/DataTable";
+import { Avatar, Dropdown, Menu } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { viewBusinessDetailsService } from "../services/BusinessDetails";
 
 interface DataType {
   key: string;
@@ -16,6 +19,20 @@ interface DataType {
   description: string;
   _id: string;
 }
+const menu = (
+  <Menu>
+    <Menu.Item key="logout">
+      <a
+        onClick={() => {
+          localStorage.clear();
+          window.location.href = "/";
+        }}
+      >
+        Logout
+      </a>
+    </Menu.Item>
+  </Menu>
+);
 
 const AddGenres = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -26,11 +43,13 @@ const AddGenres = () => {
   const [loading, setLoading] = useState(false);
   const [genreTypes, setGenreTypes] = useState<string[]>([]);
   const [genreDetails, setGenreDetails] = useState<DataType[]>([]);
+  const [businessDetails, setBusinessDetails] = useState<any>(null);
   const userID = localStorage.getItem("userID");
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchGenreTypes();
+    viewBusinessDetails();
   }, []);
   const fetchGenreTypes = async () => {
     try {
@@ -85,34 +104,56 @@ const AddGenres = () => {
   const fetchGenreDetail = async () => {
     try {
       const response = await getGenreDetailService({ userID: Number(userID) });
+      console.log("Genre Detail Response:", response);
 
       if (response.message === "success") {
-        const data = (response.genres || []).map(
-          (item: any, index: number) => ({
-            key: String(index),
-            _id: item._id,
-            name: item.name,
-            description: item.description,
-          })
-        );
+        const genres = Array.isArray(response.genres) ? response.genres : [];
+
+        if (genres.length === 0) {
+          setGenreDetails([]);
+          return;
+        }
+
+        const data = genres.map((item: any, index: number) => ({
+          key: String(index),
+          _id: item._id,
+          name: item.name,
+          description: item.description,
+        }));
+
         setGenreDetails(data);
       } else {
         toast.error(response.error || "Failed to fetch genre types.");
+        setGenreDetails([]);
       }
     } catch (error) {
       toast.error("Something went wrong while fetching genre types.");
       console.error(error);
+      setGenreDetails([]);
     }
   };
 
+  const viewBusinessDetails = async () => {
+    try {
+      const response = await viewBusinessDetailsService(Number(userID));
+      console.log("Business Details Response:", response);
+      if (response.message === "success") {
+        setBusinessDetails(response.businessDetails);
+        console.log("Business Details:", response.businessDetails);
+      } else {
+        toast.error(response.error || "Failed to fetch business details.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong while fetching business details.");
+    }
+  };
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
-      <aside
+       <aside
         className={`bg-gray-800 text-white p-4 md:p-6 transition-all duration-300
-        ${
-          menuOpen ? "block" : "hidden"
-        } md:flex md:flex-col md:w-56 fixed md:relative z-50 h-full`}
+    ${menuOpen ? "block" : "hidden"} 
+    md:flex md:flex-col md:w-56 fixed md:relative z-50 h-full`}
       >
         <img
           src={logo}
@@ -120,28 +161,40 @@ const AddGenres = () => {
           className="w-32 mb-8 mx-auto md:mx-0 cursor-pointer"
           onClick={() => navigate("/")}
         />
-        <nav className="space-y-3 w-full">
-          <button
-            className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            Dashboard
-          </button>
-          <button
-            className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
-            onClick={() => navigate("/stalls-map")}
-          >
-            Stalls
-          </button>
-          <button
-            className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
-            onClick={() => navigate("/add-genres")}
-          >
-            Add Genres
-          </button>
-          <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
-            Settings
-          </button>
+
+        <nav className="space-y-3 w-full h-full flex flex-col justify-between">
+          <div>
+            <button
+              className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
+              onClick={() => navigate("/add-genres")}
+            >
+              Home
+            </button>
+            <button
+              className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              Dashboard
+            </button>
+            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer" onClick={() => navigate("/stalls-map")} >
+              Stalls
+            </button>
+            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
+              Bookings
+            </button>
+            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
+              Settings
+            </button>
+          </div>
+
+          <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">
+            <div
+              onClick={(e) => e.preventDefault()}
+              className="flex items-center justify-start mt-4 cursor-pointer"
+            >
+              <Avatar size="large" icon={<UserOutlined />} />
+            </div>
+          </Dropdown>
         </nav>
       </aside>
 
@@ -168,28 +221,28 @@ const AddGenres = () => {
 
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2 text-start">
-                Name
+                Publisher / Vendor Name
               </label>
-              <input
-                type="text"
-                value={publisherName}
-                onChange={(e) => setPublisherName(e.target.value)}
-                placeholder="Enter publisher/vendor name"
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
+                {businessDetails?.[0]?.businessName || "N/A"}
+              </p>
+            </div>
+               <div className="mb-4">
+              <label className="block text-gray-700 font-semibold mb-2 text-start">
+                Owner Name
+              </label>
+              <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
+                {businessDetails?.[0]?.ownerName || "N/A"}
+              </p>
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2 text-start">
                 Contact Details
               </label>
-              <input
-                type="text"
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                placeholder="Enter contact details"
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
+                {businessDetails?.[0]?.phoneNumber || "N/A"}
+              </p>
             </div>
           </div>
 
@@ -243,7 +296,11 @@ const AddGenres = () => {
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-6 flex-1 mt-2 ">
-          <DataTable fetchData={fetchGenreDetail} genreDetails={genreDetails} genreTypes={genreTypes} />
+          <DataTable
+            fetchData={fetchGenreDetail}
+            genreDetails={genreDetails}
+            genreTypes={genreTypes}
+          />
         </div>
       </main>
     </div>
