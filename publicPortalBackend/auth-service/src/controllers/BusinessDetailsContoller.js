@@ -13,4 +13,15 @@ const handleAddBusinessDetails = async (req, res) => {
   }
 };
 
-export default { handleAddBusinessDetails };
+const handleViewBusinessDetails = async(req,res)=>{
+   const { userID } = req.body;
+   try {
+     const businessDetails = await businessService.viewBusinessDetails(userID);
+     return res.status(200).json({ message: "success", businessDetails });
+   } catch (error) {
+     return res.status(500).json({ error: error.message });
+   }
+
+}
+
+export default { handleAddBusinessDetails, handleViewBusinessDetails };

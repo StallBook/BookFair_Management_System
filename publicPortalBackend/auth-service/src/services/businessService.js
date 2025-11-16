@@ -14,4 +14,16 @@ const addBusinessDetails = async (userID, business) => {
   return updatedUser;
 };
 
-export default { addBusinessDetails };
+const viewBusinessDetails = async (userID) => {
+  const foundUser = await user.findOne({ userID: userID });
+  if (!foundUser) {
+    throw new Error("User not found");
+  } 
+  if (!foundUser.business) {
+    return { message: "User has no business details" };
+  }
+
+  return foundUser.business;
+};
+
+export default { addBusinessDetails, viewBusinessDetails };
