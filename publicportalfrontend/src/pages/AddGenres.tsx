@@ -9,6 +9,8 @@ import {
 import { toast } from "react-toastify";
 import Banner from "../components/banner";
 import DataTable from "../components/DataTable";
+import { Avatar, Dropdown, Menu } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 interface DataType {
   key: string;
@@ -16,6 +18,20 @@ interface DataType {
   description: string;
   _id: string;
 }
+const menu = (
+  <Menu>
+    <Menu.Item key="logout">
+      <a
+        onClick={() => {
+          localStorage.clear();
+          window.location.href = "/";
+        }}
+      >
+        Logout
+      </a>
+    </Menu.Item>
+  </Menu>
+);
 
 const AddGenres = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -83,27 +99,37 @@ const AddGenres = () => {
   };
 
   const fetchGenreDetail = async () => {
-    try {
-      const response = await getGenreDetailService({ userID: Number(userID) });
+  try {
+    const response = await getGenreDetailService({ userID: Number(userID) });
+    console.log("Genre Detail Response:", response);
 
-      if (response.message === "success") {
-        const data = (response.genres || []).map(
-          (item: any, index: number) => ({
-            key: String(index),
-            _id: item._id,
-            name: item.name,
-            description: item.description,
-          })
-        );
-        setGenreDetails(data);
-      } else {
-        toast.error(response.error || "Failed to fetch genre types.");
+    if (response.message === "success") {
+      const genres = Array.isArray(response.genres) ? response.genres : [];
+
+      if (genres.length === 0) {
+        setGenreDetails([]); 
+        return;
       }
-    } catch (error) {
-      toast.error("Something went wrong while fetching genre types.");
-      console.error(error);
+
+      const data = genres.map((item: any, index: number) => ({
+        key: String(index),
+        _id: item._id,
+        name: item.name,
+        description: item.description,
+      }));
+
+      setGenreDetails(data);
+    } else {
+      toast.error(response.error || "Failed to fetch genre types.");
+      setGenreDetails([]);
     }
-  };
+  } catch (error) {
+    toast.error("Something went wrong while fetching genre types.");
+    console.error(error);
+    setGenreDetails([]);
+  }
+};
+
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100 overflow-hidden">
@@ -121,6 +147,12 @@ const AddGenres = () => {
           onClick={() => navigate("/")}
         />
         <nav className="space-y-3 w-full">
+            <button
+            className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
+            onClick={() => navigate("/add-genres")}
+          >
+          Home
+          </button>
           <button
             className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
             onClick={() => navigate("/")}
@@ -133,15 +165,17 @@ const AddGenres = () => {
           >
             Stalls
           </button>
-          <button
-            className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded"
-            onClick={() => navigate("/add-genres")}
-          >
-            Add Genres
-          </button>
           <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
             Settings
           </button>
+          <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">
+            <div
+              onClick={(e) => e.preventDefault()}
+              className="flex items-center justify-start mt-4 cursor-pointer"
+            >
+              <Avatar size="large" icon={<UserOutlined />} />
+            </div>
+          </Dropdown>
         </nav>
       </aside>
 
