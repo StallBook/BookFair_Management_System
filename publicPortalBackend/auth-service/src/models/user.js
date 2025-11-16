@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema({
       description: { type: String, default: "" },
     },
   ],
+   business: {
+    businessName: { type: String },
+    ownerName: { type: String },
+    phoneNumber: { type: String },    
+  },
+
 });
 
 userSchema.plugin(AutoIncrement, { inc_field: "userID" });

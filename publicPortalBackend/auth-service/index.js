@@ -6,6 +6,7 @@ import authRouters from './src/routes/authRoutes.js';
 import userRoutes from './src/routes/userRoutes.js';
 import googleAuthRoutes from './src/routes/googleAuthRoute.js';
 import genereRoutes from './src/routes/genresRoute.js';
+import businessDetailsRoute from './src/routes/businessDetailsRoute.js';
 import session from 'express-session';
 import passport from 'passport';
 import './src/utills/passport.js';
@@ -38,6 +39,7 @@ app.use('/', authRouters)
 app.use('/user', userRoutes)
 app.use("/auth", googleAuthRoutes);
 app.use("/genres",genereRoutes);
+app.use('/business', businessDetailsRoute);
 
 
 mongoose.connect(process.env.AUTH_MONGODB_URI)
