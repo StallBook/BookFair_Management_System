@@ -15,7 +15,6 @@ const getGenres = async (req, res) => {
       "Biography",
       "Education",
       "Religious",
-      "Other",
     ];
     return res.status(200).json({ message: "success", genreTypes });
   } catch (error) {
