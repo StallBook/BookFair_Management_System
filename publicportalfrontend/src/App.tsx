@@ -30,7 +30,6 @@ function App() {
           <Route path="/stalls-map" element={<StallsMap />} />
           <Route path="/add-genres" element={<AddGenres />} />
           <Route path="/business-details" element={<RegisterBusiness />} />
-
         </Routes>
       </BrowserRouter>
     </div>
