@@ -221,7 +221,7 @@ const AddGenres = () => {
 
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2 text-start">
-                Publisher / Vendor Name
+               Publication or Bookstore Name
               </label>
               <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
                 {businessDetails?.[0]?.businessName || "N/A"}
@@ -229,7 +229,7 @@ const AddGenres = () => {
             </div>
                <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2 text-start">
-                Owner Name
+                Owner or Representative Name
               </label>
               <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
                 {businessDetails?.[0]?.ownerName || "N/A"}
@@ -238,7 +238,7 @@ const AddGenres = () => {
 
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2 text-start">
-                Contact Details
+                Contact Number
               </label>
               <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
                 {businessDetails?.[0]?.phoneNumber || "N/A"}
