@@ -80,10 +80,9 @@ const Home = () => {
             </motion.div>
 
             {/* Feature Blocks */}
-            <div className="grid grid-cols-1 md:grid-cols-3 justify-items-center gap-1 mt-12 px-6 md:px-20 lg:px-40">
-                {/* Feature 1 */}
+            {/* <div className="grid grid-cols-1 md:grid-cols-3 justify-items-center gap-1 mt-12 px-6 md:px-20 lg:px-40">
                 <motion.div
-                    className="rounded-xl shadow-lg p-4 w-64 text-center hover:shadow-xl transition-all"
+                    className="rounded-xl shadow-lg p-4 w-64 text-center hover:shadow-xl transition-all bg-white/80"
                     variants={fadeUp}
                     custom={0.4}
                     initial="hidden"
@@ -96,9 +95,8 @@ const Home = () => {
 
                 </motion.div>
 
-                {/* Feature 2 */}
                 <motion.div
-                    className="rounded-xl shadow-lg p-4 w-64 text-center hover:shadow-xl transition-all"
+                    className="rounded-xl shadow-lg p-4 w-64 text-center hover:shadow-xl transition-all bg-white/80"
                     variants={fadeUp}
                     custom={0.6}
                     initial="hidden"
@@ -112,24 +110,23 @@ const Home = () => {
                     </span>
                 </motion.div>
 
-                {/* Feature 3 */}
                 <motion.div
-                    className="rounded-xl shadow-lg p-4 w-64 text-center hover:shadow-xl transition-all"
+                    className="rounded-xl shadow-lg p-4 w-64 text-center hover:shadow-xl transition-all bg-white/80"
                     variants={fadeUp}
                     custom={0.8}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    style={{ backgroundColor: "oklch(94.8% 0.028 342.258)" }}
+                style={{ backgroundColor: "oklch(94.8% 0.028 342.258)" }}
                 >
                     <h3>Reserved</h3>
                     <span>
                         {stalls.filter((s) => s.status === "reserved").length}
                     </span>
                 </motion.div>
-            </div>
+            </div> */}
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12 px-6 md:px-20 lg:px-40 mb-20">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-48 px-6 md:px-20 lg:px-40 mb-20">
                 {/* Feature 1 */}
                 <motion.div
                     className="bg-white/80 rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all"
