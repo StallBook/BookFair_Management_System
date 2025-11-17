@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import bg from "../assets/bg2.png";
 import { getAllStalls } from "../services/StallService";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 50 },
@@ -34,6 +34,11 @@ const Home = () => {
         reservedAt?: string | null;
     }
     const [stalls, setStalls] = useState<Stall[]>([]);
+
+    useEffect(() => {
+        fetchStalls();
+    }, []);
+
     const fetchStalls = async () => {
         const res = await getAllStalls();
         if (res.message === "success") {
