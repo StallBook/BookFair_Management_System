@@ -7,6 +7,7 @@ import Signin from "./pages/Signin";
 import { ToastContainer } from "react-toastify";
 import StallsMap from "./pages/StallsMap";
 import AddGenres from "./pages/AddGenres";
+import RegisterBusiness from "./pages/RegisterBusiness";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/stalls-map" element={<StallsMap />} />
           <Route path="/add-genres" element={<AddGenres />} />
+          <Route path="/business-details" element={<RegisterBusiness />} />
         </Routes>
       </BrowserRouter>
     </div>

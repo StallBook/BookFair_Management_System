@@ -21,6 +21,7 @@ const Signin = () => {
     email: "",
     password: "",
   });
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const onFinish = async (values: any) => {
     try {
@@ -30,9 +31,17 @@ const Signin = () => {
         password: values.password,
       };
       const response = await userSignInService(data);
+      console.log("Signin Response:", response);
       if (response.message === "success") {
+        if (response.token) {
+          localStorage.setItem("token", response.token);
+        }
+        console.log("response.user:", response.user);
+        if (response.user) {
+          localStorage.setItem("userID", response.user.userID);
+        }
         toast.success("Welcome back! You’ve successfully signed in.");
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/add-genres"), 2000);
       } else {
         toast.error(response.error || "Signin failed. Try again!");
       }
@@ -57,6 +66,12 @@ const Signin = () => {
 
     onFinish(formValues);
   };
+
+  const googleAuth = () => {
+    console.log("API_URL:", API_URL);
+    window.open(`${API_URL}/auth/auth/google`, "_self");
+  };
+
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
@@ -146,7 +161,11 @@ const Signin = () => {
         </div>
 
         {/* Google Signup */}
-        <button className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded-lg py-3 px-4 w-full transition-all mb-4">
+        <button
+          type="button"
+          onClick={googleAuth}
+          className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded-lg py-3 px-4 w-full transition-all mb-4"
+        >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             alt="Google"

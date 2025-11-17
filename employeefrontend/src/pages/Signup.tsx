@@ -1,13 +1,42 @@
 import bg from '../assets/bg1.png';
-import React from "react";
-import { Typography, Input, Button } from "antd";
+import React, { useState } from "react";
+import { Typography, Input, Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import logo from '../assets/lg.png';
+import axios from 'axios';
 
 const { Title, Text } = Typography;
 
+// Vite style env (use REACT_APP_API_BASE for CRA)
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
+
+
 const Signup = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit() {
+    if (!name || !email || !password) {
+      message.warning("Please fill all fields");
+      return;
+    }
+    try {
+      setLoading(true);
+      await axios.post(`${API_BASE}/api/auth/register`, { name, email, password }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      message.success("Signup successful! Please sign in.");
+      navigate("/signin");
+    } catch (err: any) {
+      const apiMsg = err?.response?.data?.msg || err?.response?.data?.error || "Signup failed";
+      message.error(apiMsg);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div
@@ -48,21 +77,39 @@ const Signup = () => {
         <div className="mt-5 sm:mt-6 space-y-3 sm:space-y-4 text-left">
           <div>
             <Text style={{ color: "black" }}>Full Name</Text>
-            <Input placeholder="John Doe" />
+            <Input
+              placeholder="John Doe"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoComplete="name"
+            />
           </div>
 
           <div>
             <Text style={{ color: "black" }}>Email</Text>
-            <Input type="email" placeholder="you@example.com" />
+            <Input
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
           </div>
 
           <div>
             <Text style={{ color: "black" }}>Password</Text>
-            <Input.Password placeholder="••••••••" />
+            <Input.Password
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+            />
           </div>
 
           <Button
             type="primary"
+            loading={loading}
+            onClick={handleSubmit}
             className="w-full !bg-black !border-black hover:!bg-black hover:!border-black focus:!bg-black active:!bg-black"
             style={{ fontWeight: 600 }}
           >
