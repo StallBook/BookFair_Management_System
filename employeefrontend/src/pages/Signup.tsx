@@ -1,5 +1,5 @@
 import bg from '../assets/bg1.png';
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Typography, Input, Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import logo from '../assets/lg.png';
@@ -10,29 +10,86 @@ const { Title, Text } = Typography;
 // Vite style env (use REACT_APP_API_BASE for CRA)
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; 
+// at least 8 chars, 1 uppercase, 1 lowercase, 1 number
 
-const Signup = () => {
+const validateName = (name: string) => {
+  if (!name) return "Full name is required";
+  if (name.trim().length < 2) return "Name must be at least 2 characters";
+  return "";
+};
+const validateEmail = (email: string) => {
+  if (!email) return "Email is required";
+  if (!emailRegex.test(email)) return "Please enter a valid email";
+  return "";
+};
+const validatePassword = (password: string) => {
+  if (!password) return "Password is required";
+  if (!passwordRegex.test(password)) return "Password must be 8+ chars and include uppercase, lowercase and a number";
+  return "";
+};
+
+const Signup: React.FC = () => {
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
+  // server side field errors (optional)
+  const [serverNameError, setServerNameError] = useState<string>("");
+  const [serverEmailError, setServerEmailError] = useState<string>("");
+  const [serverPasswordError, setServerPasswordError] = useState<string>("");
+
+  const nameError = useMemo(() => validateName(name), [name]);
+  const emailError = useMemo(() => validateEmail(email), [email]);
+  const passwordError = useMemo(() => validatePassword(password), [password]);
+
+  const anyError = Boolean(nameError || emailError || passwordError);
+
   async function handleSubmit() {
-    if (!name || !email || !password) {
-      message.warning("Please fill all fields");
+    // clear server errors on new attempt
+    setServerNameError("");
+    setServerEmailError("");
+    setServerPasswordError("");
+
+    if (anyError) {
+      message.warning("Please fix validation errors before submitting");
       return;
     }
+
     try {
       setLoading(true);
-      await axios.post(`${API_BASE}/api/auth/register`, { name, email, password }, {
+      const res = await axios.post(`${API_BASE}/api/auth/register`, { name, email, password }, {
         headers: { 'Content-Type': 'application/json' }
       });
-      message.success("Signup successful! Please sign in.");
+
+      // Prefer API message if provided
+      const successMsg = res?.data?.msg || "Signup successful! Please sign in.";
+      message.success(successMsg);
       navigate("/signin");
     } catch (err: any) {
-      const apiMsg = err?.response?.data?.msg || err?.response?.data?.error || "Signup failed";
-      message.error(apiMsg);
+      // API message fallback
+      const apiMsg = err?.response?.data?.msg || err?.response?.data?.error || null;
+
+      // If backend provided field-level errors (common shape: { errors: [{ param, msg }, ...] })
+      const fieldErrors: Array<{ param?: string; msg?: string }> = err?.response?.data?.errors || [];
+
+      if (fieldErrors.length) {
+        fieldErrors.forEach((fe) => {
+          const param = fe.param?.toString?.().toLowerCase?.();
+          const text = fe.msg || "";
+          if (param === "name" || param === "fullname") setServerNameError(text);
+          if (param === "email") setServerEmailError(text);
+          if (param === "password") setServerPasswordError(text);
+        });
+        // show a short toast letting user check inline errors
+        message.error(apiMsg || "Please fix the highlighted errors");
+      } else {
+        // generic API error
+        message.error(apiMsg || "Signup failed");
+      }
     } finally {
       setLoading(false);
     }
@@ -71,7 +128,7 @@ const Signup = () => {
             fontSize: "clamp(12px, 1.6vw, 16px)"
           }}
         >
-          Join the  StallBook employee portal
+          Join the StallBook employee portal
         </Text>
 
         <div className="mt-5 sm:mt-6 space-y-3 sm:space-y-4 text-left">
@@ -82,7 +139,10 @@ const Signup = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete="name"
+              status={nameError || serverNameError ? "error" : undefined}
             />
+            {nameError && <Text type="danger" className="text-xs">{nameError}</Text>}
+            {!nameError && serverNameError && <Text type="danger" className="text-xs">{serverNameError}</Text>}
           </div>
 
           <div>
@@ -93,7 +153,10 @@ const Signup = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
+              status={emailError || serverEmailError ? "error" : undefined}
             />
+            {emailError && <Text type="danger" className="text-xs">{emailError}</Text>}
+            {!emailError && serverEmailError && <Text type="danger" className="text-xs">{serverEmailError}</Text>}
           </div>
 
           <div>
@@ -103,13 +166,20 @@ const Signup = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
+              status={passwordError || serverPasswordError ? "error" : undefined}
             />
+            {passwordError && <Text type="danger" className="text-xs">{passwordError}</Text>}
+            {!passwordError && serverPasswordError && <Text type="danger" className="text-xs">{serverPasswordError}</Text>}
+            <Text className="block mt-1 text-xs text-black/60">
+              Minimum 8 characters; include uppercase, lowercase and a number.
+            </Text>
           </div>
 
           <Button
             type="primary"
             loading={loading}
             onClick={handleSubmit}
+            disabled={anyError || loading}
             className="w-full !bg-black !border-black hover:!bg-black hover:!border-black focus:!bg-black active:!bg-black"
             style={{ fontWeight: 600 }}
           >
