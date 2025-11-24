@@ -67,13 +67,13 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
             <div className="hidden md:flex space-x-4">
                 <a
                     className="rounded-xl p-3 bg-blue-400 hover:bg-white hover:text-blue-500 transition"
-                    href="/started"
+                    href="/stalls-map"
                 >
                     Book Now
                 </a>
                 <a
                     className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
-                    href="/talk"
+                    href="/signup"
                 >
                     Sign Up
                 </a>

@@ -6,7 +6,6 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
 
 app.use("/auth", createProxyMiddleware({ target: process.env.AUTH_SERVICE_URL, changeOrigin: true }));
 app.use("/stalls", createProxyMiddleware({ target: process.env.STALL_SERVICE_URL, changeOrigin: true }));
