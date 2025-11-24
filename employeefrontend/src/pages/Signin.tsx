@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import bg from "../assets/bg1.png";
 import logo from "../assets/lg.png";
 import { Typography, message } from "antd";
@@ -7,27 +7,74 @@ import { api } from "../lib/api";
 
 const { Text } = Typography;
 
-export default function Signin() {
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const Signin = () => {
-    const navigate = useNavigate();
+const validateEmail = (email: string) => {
+  if (!email) return "Email is required";
+  if (!emailRegex.test(email)) return "Please enter a valid email";
+  return "";
+};
+const validatePassword = (password: string) => {
+  if (!password) return "Password is required";
+  if (password.length < 8) return "Password must be at least 8 characters";
+  return "";
+};
+
+const Signin: React.FC = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // server-side field errors
+  const [serverEmailError, setServerEmailError] = useState<string>("");
+  const [serverPasswordError, setServerPasswordError] = useState<string>("");
+
+  const emailError = useMemo(() => validateEmail(email), [email]);
+  const passwordError = useMemo(() => validatePassword(password), [password]);
+
+  const anyError = Boolean(emailError || passwordError);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email || !password) {
-      message.warning("Please enter email and password");
+
+    // clear server side errors before attempt
+    setServerEmailError("");
+    setServerPasswordError("");
+
+    if (anyError) {
+      message.warning("Please fix validation errors before submitting");
       return;
     }
     try {
       setLoading(true);
       const { data } = await api.post("/api/auth/login", { email, password });
-      // Backend responds with { token }
-      localStorage.setItem("sb_token", data.token);
-      message.success("Signed in successfully");
+
+      // If backend returns a msg, prefer it for the toast
+      const successMsg = data?.msg || "Signed in successfully";
+      // store token if present
+      if (data?.token) {
+        localStorage.setItem("sb_token", data.token);
+      }
+      message.success(successMsg);
       navigate("/dashboard");
     } catch (err: any) {
-      const apiMsg = err?.response?.data?.msg || err?.response?.data?.error || "Login failed";
-      message.error(apiMsg);
+      const apiMsg = err?.response?.data?.msg || err?.response?.data?.error || null;
+
+      // handle field-level errors if provided (common shape: { errors: [{ param, msg }, ...] })
+      const fieldErrors: Array<{ param?: string; msg?: string }> = err?.response?.data?.errors || [];
+
+      if (fieldErrors.length) {
+        fieldErrors.forEach((fe) => {
+          const param = fe.param?.toString?.().toLowerCase?.();
+          const text = fe.msg || "";
+          if (param === "email") setServerEmailError(text);
+          if (param === "password") setServerPasswordError(text);
+        });
+        message.error(apiMsg || "Please check the highlighted fields");
+      } else {
+        message.error(apiMsg || "Login failed");
+      }
     } finally {
       setLoading(false);
     }
@@ -90,13 +137,16 @@ const Signin = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            className="
+            className={`
               w-full p-3 sm:p-3.5
-              rounded-lg border border-black/30
+              rounded-lg border
+              ${emailError || serverEmailError ? "border-red-500" : "border-black/30"}
               bg-white/80
               focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent
-            "
+            `}
           />
+          {emailError && <Text type="danger" className="text-xs">{emailError}</Text>}
+          {!emailError && serverEmailError && <Text type="danger" className="text-xs">{serverEmailError}</Text>}
 
           <label className="text-sm sm:text-base text-gray-800 mt-2" htmlFor="password">
             Password
@@ -109,18 +159,21 @@ const Signin = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="
+            className={`
               w-full p-3 sm:p-3.5
-              rounded-lg border border-black/30
+              rounded-lg border
+              ${passwordError || serverPasswordError ? "border-red-500" : "border-black/30"}
               bg-white/80
               focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent
-            "
+            `}
           />
+          {passwordError && <Text type="danger" className="text-xs">{passwordError}</Text>}
+          {!passwordError && serverPasswordError && <Text type="danger" className="text-xs">{serverPasswordError}</Text>}
 
           <button
             type="submit"
-            disabled={loading}
-            className="
+            disabled={loading || anyError}
+            className={`
               mt-3 sm:mt-4
               bg-black hover:bg-gray-800 active:scale-[0.99]
               text-white font-semibold
@@ -128,7 +181,7 @@ const Signin = () => {
               rounded-lg transition-all
               w-full
               disabled:opacity-60 disabled:cursor-not-allowed
-            "
+            `}
           >
             {loading ? "Signing in..." : "Login"}
           </button>
@@ -139,7 +192,7 @@ const Signin = () => {
           <button
             type="button"
             className="text-red-700 hover:underline font-medium"
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/")}
           >
             Sign Up
           </button>
@@ -147,22 +200,6 @@ const Signin = () => {
       </div>
     </div>
   );
-}
-            className="min-h-screen bg-cover bg-center flex items-center justify-center"
-            style={{ backgroundImage: `url(${bg})` }}
-        >
-            <img
-                    src={logo}
-                    alt="Stallbook"
-                    className="absolute left-1/2 -translate-x-1/2 z-0
-                               top-4 sm:top-6 md:top-8
-                               h-10 sm:h-12 md:h-14 lg:h-16 pointer-events-none select-none"
-                  />
-
-           
-            
-        </div>
-    );
 };
 
 export default Signin;
