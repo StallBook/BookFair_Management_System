@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
-import bg from "../assets/bg2.png";
+import bg from "../assets/b1.png";
 import { getAllStalls } from "../services/StallService";
 import { useState, useEffect } from "react";
 
