@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import StallsMap from "./pages/StallsMap";
 import AddGenres from "./pages/AddGenres";
 import RegisterBusiness from "./pages/RegisterBusiness";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/stalls-map" element={<StallsMap />} />
           <Route path="/add-genres" element={<AddGenres />} />
           <Route path="/business-details" element={<RegisterBusiness />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </BrowserRouter>
     </div>

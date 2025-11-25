@@ -107,8 +107,8 @@ const Signup = () => {
               type="text"
               placeholder="Username"
               className={`p-3 rounded-lg border ${errors.username
-                  ? "border-red-400 focus:ring-red-500"
-                  : "border-blue-300 focus:ring-blue-500"
+                ? "border-red-400 focus:ring-red-500"
+                : "border-blue-300 focus:ring-blue-500"
                 } focus:outline-none focus:ring-2 w-full`}
               name="username"
               value={formValues.username}
@@ -121,8 +121,8 @@ const Signup = () => {
               type="email"
               placeholder="Email"
               className={`p-3 rounded-lg border ${errors.email
-                  ? "border-red-400 focus:ring-red-500"
-                  : "border-blue-300 focus:ring-blue-500"
+                ? "border-red-400 focus:ring-red-500"
+                : "border-blue-300 focus:ring-blue-500"
                 } focus:outline-none focus:ring-2 w-full`}
               name="email"
               value={formValues.email}
@@ -135,8 +135,8 @@ const Signup = () => {
               type="password"
               placeholder="Password"
               className={`p-3 rounded-lg border ${errors.password
-                  ? "border-red-400 focus:ring-red-500"
-                  : "border-blue-300 focus:ring-blue-500"
+                ? "border-red-400 focus:ring-red-500"
+                : "border-blue-300 focus:ring-blue-500"
                 } focus:outline-none focus:ring-2 w-full`}
               name="password"
               value={formValues.password}
@@ -150,8 +150,8 @@ const Signup = () => {
             type="submit"
             disabled={loading}
             className={`${loading
-                ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
               } w-full text-white font-semibold py-3 rounded-lg transition-all mt-2`}
           >
             {loading ? "Signing Up..." : "Sign Up"}
