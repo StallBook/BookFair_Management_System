@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
-  className?: string; // allow optional className
+  className?: string;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
