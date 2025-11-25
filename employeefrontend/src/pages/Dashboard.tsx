@@ -1,7 +1,9 @@
+// src/pages/Stalls.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import type { JSX } from "react";
 import bg from "../assets/bg1.png";
-
+import { message } from "antd";
+import { api } from "../lib/api"; // axios instance - must exist
 
 
 export type Status = "available" | "reserved";
@@ -21,106 +23,11 @@ export interface Stall {
   size?: string;
   pricePerDay?: number;
   reservedAt?: string; // ISO
-  reservedBy?: ReservedBy;
+  reservedBy?: ReservedBy | null;
   notes?: string;
 }
 
-/**
- * Stall Availability Dashboard (Admin)
- * - Grid of bookstalls with live status badges (green/red)
- * - Click a stall to view details
- * - If reserved: show reserver details (userId, name, email, phone, org)
- * - Search + filter by status
- * - Reserve/Release actions are mocked; wire to your API later
- *
- * NOTE: This component avoids react-router hooks so it can run even when not
- * wrapped in a <Router>. Navigation uses window.history / location fallbacks.
- * If you prefer SPA navigation, wrap your app in a Router and replace the
- * goBack/goSettings handlers with react-router's useNavigate.
- */
-
-const mockStalls: Stall[] = [
-  {
-    id: "S-001",
-    name: "Stall A1",
-    status: "available",
-    size: "2m x 2m",
-    pricePerDay: 4000,
-  },
-  {
-    id: "S-002",
-    name: "Stall A2",
-    status: "reserved",
-    size: "2m x 2m",
-    pricePerDay: 4000,
-    reservedAt: "2025-11-10T09:15:00Z",
-    reservedBy: {
-      userId: "U-78345",
-      name: "Nirmal Perera",
-      email: "nirmal@example.com",
-      phone: "+94 71 123 4567",
-      organization: "Perera Publishers",
-    },
-    notes: "Requires corner power outlet.",
-  },
-  {
-    id: "S-003",
-    name: "Stall A3",
-    status: "reserved",
-    size: "3m x 2m",
-    pricePerDay: 5000,
-    reservedAt: "2025-11-11T14:30:00Z",
-    reservedBy: {
-      userId: "U-99120",
-      name: "S. Fernando",
-      email: "sfernando@example.com",
-      phone: "+94 77 555 6138",
-      organization: "Metro Books",
-    },
-  },
-  {
-    id: "S-004",
-    name: "Stall B1",
-    status: "available",
-    size: "2m x 2m",
-    pricePerDay: 3800,
-  },
-  {
-    id: "S-005",
-    name: "Stall B2",
-    status: "available",
-    size: "2m x 2m",
-    pricePerDay: 3800,
-  },
-];
-
-// Mock API layer (replace with your backend)
-const api = {
-  listStalls: async (): Promise<Stall[]> => {
-    await new Promise((r) => setTimeout(r, 200));
-    return JSON.parse(JSON.stringify(mockStalls));
-  },
-  updateStatus: async (id: string, nextStatus: Status): Promise<Stall> => {
-    await new Promise((r) => setTimeout(r, 150));
-    const idx = mockStalls.findIndex((s) => s.id === id);
-    if (idx >= 0) {
-      mockStalls[idx].status = nextStatus;
-      if (nextStatus === "available") {
-        delete mockStalls[idx].reservedBy;
-        delete mockStalls[idx].reservedAt;
-      } else if (nextStatus === "reserved" && !mockStalls[idx].reservedBy) {
-        // attach a dummy reserver so the drawer can render; replace in real flow
-        mockStalls[idx].reservedBy = {
-          userId: "U-NEW",
-          name: "Pending User",
-          email: "pending@example.com",
-        };
-        mockStalls[idx].reservedAt = new Date().toISOString();
-      }
-    }
-    return JSON.parse(JSON.stringify(mockStalls[idx]));
-  },
-};
+/* ---------- UI pieces (unchanged) ---------- */
 
 function StatusBadge({ status }: { status: Status }) {
   const color = status === "available" ? "bg-green-500" : "bg-red-500";
@@ -138,9 +45,7 @@ function StatusBadge({ status }: { status: Status }) {
 }
 
 function StallCard({ stall, onOpen }: { stall: Stall; onOpen: (s: Stall) => void }) {
-  // Single off-white background for ALL stall cards
-  const base = "bg-gray-300 ring-gray-200 hover:ring-gray-300"; // off-white tint
-
+  const base = "bg-gray-300 ring-gray-200 hover:ring-gray-300";
   return (
     <button
       onClick={() => onOpen(stall)}
@@ -179,9 +84,9 @@ function StallCard({ stall, onOpen }: { stall: Stall; onOpen: (s: Stall) => void
   );
 }
 
+/* ---------- Main component - wired to backend ---------- */
 
 export default function Stalls(): JSX.Element {
-  // Safe navigation fallbacks so this component works without a Router
   const canUseWindow = typeof window !== "undefined";
   const goBack = () => {
     if (!canUseWindow) return;
@@ -198,42 +103,98 @@ export default function Stalls(): JSX.Element {
   const [tab, setTab] = useState<"all" | Status>("all");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [active, setActive] = useState<Stall | null>(null); // selected stall for drawer
+  const [active, setActive] = useState<Stall | null>(null);
+
+  // helper to normalize server stall to our interface
+  function normalizeStall(raw: any): Stall {
+    return {
+      id: raw.id || raw._id?.toString?.() || String(raw._id || ""),
+      name: raw.name || "—",
+      status: raw.status === "reserved" ? "reserved" : "available",
+      size: raw.size,
+      pricePerDay: raw.pricePerDay,
+      reservedAt: raw.reservedAt ? new Date(raw.reservedAt).toISOString() : undefined,
+      reservedBy: raw.reservedBy || null,
+      notes: raw.notes,
+    };
+  }
+
+  // fetch stalls from server
+  async function fetchStalls() {
+    setError(null);
+    try {
+      setLoading(true);
+      const res = await api.get("/api/stalls");
+      if (!Array.isArray(res.data)) {
+        throw new Error("Unexpected response from server");
+      }
+      const normalized = res.data.map(normalizeStall);
+      setAllStalls(normalized);
+    } catch (err: any) {
+      console.error("Failed to load stalls", err);
+      setError(err?.response?.data?.msg || err?.message || "Failed to load stalls");
+      message.error(err?.response?.data?.msg || "Failed to load stalls");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      try {
-        setLoading(true);
-        const data = await api.listStalls();
-        if (mounted) setAllStalls(data);
-      } catch (e) {
-        setError("Failed to load stalls");
-      } finally {
-        setLoading(false);
-      }
+      if (!mounted) return;
+      await fetchStalls();
     })();
     return () => {
       mounted = false;
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // load once on mount
 
   const filtered = useMemo(() => {
     let rows = allStalls;
     if (tab !== "all") rows = rows.filter((r) => r.status === tab);
     if (query.trim()) {
       const q = query.toLowerCase();
-      rows = rows.filter((r) => [r.name, r.id].some((v) => String(v).toLowerCase().includes(q)));
+      rows = rows.filter((r) =>
+        [r.name, r.id].some((v) => String(v || "").toLowerCase().includes(q))
+      );
     }
     return rows;
   }, [allStalls, tab, query]);
 
+  // toggle status with backend call
   function toggleStatus(stall: Stall) {
     return async () => {
+      // Confirmation + collect reserver info when marking reserved
       const next: Status = stall.status === "available" ? "reserved" : "available";
-      const updated = await api.updateStatus(stall.id, next);
-      setAllStalls((prev) => prev.map((s) => (s.id === updated.id ? { ...s, ...updated } : s)));
-      setActive((cur) => (cur && cur.id === updated.id ? { ...cur, ...updated } : cur));
+
+      let payload: any = { status: next };
+
+      if (next === "reserved") {
+        // small prompt flow — replace with a modal later if you want nicer UI
+        const name = window.prompt("Enter reserver's name (required)", "");
+        if (!name) {
+          message.info("Reservation cancelled — name is required");
+          return;
+        }
+        const email = window.prompt("Enter reserver's email (optional)", "") || undefined;
+        const userId = `U-${Math.random().toString(36).slice(2, 9).toUpperCase()}`;
+        payload.reservedBy = { userId, name, email };
+      }
+
+      try {
+        // optimistic UI: set loading state on button by marking global loading
+        const res = await api.patch(`/api/stalls/${stall.id}/status`, payload);
+        const updated = normalizeStall(res.data);
+        setAllStalls((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+        setActive((cur) => (cur && cur.id === updated.id ? updated : cur));
+        message.success(`Stall ${updated.id} updated`);
+      } catch (err: any) {
+        console.error("Failed to update stall", err);
+        const apiMsg = err?.response?.data?.msg || err?.message || "Failed to update stall";
+        message.error(apiMsg);
+      }
     };
   }
 
@@ -241,6 +202,7 @@ export default function Stalls(): JSX.Element {
     if (!text) return;
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(text);
+      message.success("Copied to clipboard");
     }
   }
 
@@ -249,7 +211,7 @@ export default function Stalls(): JSX.Element {
       {/* Top bar */}
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-gray-600 border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
-          <div className="font-bold text-white tracking-tight text-xl">StallBook Dashboard</div>
+          <div className="font-bold text-black tracking-tight text-xl">StallBook Dashboard</div>
           <div className="ml-auto flex items-center gap-2">
             <button
               className="text-sm text-gray-800 fontweight-medium font-semibold hover:text-black px-3 py-1.5 rounded-lg hover:bg-gray-100"
@@ -266,70 +228,66 @@ export default function Stalls(): JSX.Element {
           </div>
         </div>
       </header>
- <div
-    className="relative min-h-screen bg-gray-50 bg-cover bg-center "
-    style={{ backgroundImage: `url(${bg})` }}
-    
-  >
-    
-      {/* Controls */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-col md:flex-row md:items-center gap-3">
-          <div className="flex items-center gap-1 bg-white rounded-xl p-1 ring-1 ring-black/5 w-fit">
-            {[
-              { key: "all", label: "All" },
-              { key: "available", label: "Available" },
-              { key: "reserved", label: "Reserved" },
-            ].map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key as "all" | Status)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-                  tab === t.key ? "bg-black text-white" : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
+
+      <div className="relative min-h-screen bg-gray-50 bg-cover bg-center " style={{ backgroundImage: `url(${bg})` }}>
+        {/* Controls */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col md:flex-row md:items-center gap-3">
+            <div className="flex items-center gap-1 bg-white rounded-xl p-1 ring-1 ring-black/5 w-fit">
+              {[
+                { key: "all", label: "All" },
+                { key: "available", label: "Available" },
+                { key: "reserved", label: "Reserved" },
+              ].map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setTab(t.key as "all" | Status)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                    tab === t.key ? "bg-black text-white" : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative md:ml-auto">
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search by stall name or ID…"
+                className="w-full md:w-80 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
+              />
+              {query && (
+                <button onClick={() => setQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="relative md:ml-auto">
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by stall name or ID…"
-              className="w-full md:w-80 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
-            />
-            {query && (
-              <button
-                onClick={() => setQuery("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs"
-              >
-                Clear
-              </button>
+          {/* Content */}
+          <div className="mt-5">
+            {loading ? (
+              <div className="text-gray-600">Loading stalls…</div>
+            ) : error ? (
+              <div className="text-red-600">{error}</div>
+            ) : filtered.length === 0 ? (
+              <div className="text-gray-600">No stalls match your filters.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filtered.map((stall) => (
+                  <div key={stall.id} className="relative">
+                    <StallCard stall={stall} onOpen={setActive} />
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
-       {/* Content */}
-        <div className="mt-5">
-          {loading ? (
-            <div className="text-gray-600">Loading stalls…</div>
-          ) : error ? (
-            <div className="text-red-600">{error}</div>
-          ) : filtered.length === 0 ? (
-            <div className="text-gray-600">No stalls match your filters.</div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map((stall) => (
-                <StallCard key={stall.id} stall={stall} onOpen={setActive} />
-              ))}
-            </div>
-          )}
-        </div>
       </div>
-</div>
 
-     {/* Drawer / Slide-over */}
+      {/* Drawer / Slide-over */}
       {active && (
         <div className="fixed inset-0 z-40 ">
           <div className="absolute inset-0 bg-black/40" onClick={() => setActive(null)} />
@@ -394,16 +352,10 @@ export default function Stalls(): JSX.Element {
                 </div>
 
                 <div className="mt-4 flex gap-2">
-                  <button
-                    onClick={() => copy(active.reservedBy?.userId)}
-                    className="px-3 py-2 text-sm rounded-lg border border-gray-300 hover:bg-gray-50"
-                  >
+                  <button onClick={() => copy(active.reservedBy?.userId)} className="px-3 py-2 text-sm rounded-lg border border-gray-300 hover:bg-gray-50">
                     Copy User ID
                   </button>
-                  <a
-                    href={`mailto:${active.reservedBy?.email}?subject=Your%20Bookfair%20Stall%20Reservation%20(${active.name})`}
-                    className="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-black"
-                  >
+                  <a href={`mailto:${active.reservedBy?.email}?subject=Your%20Bookfair%20Stall%20Reservation%20(${active.name})`} className="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-black">
                     Email User
                   </a>
                 </div>
@@ -425,10 +377,7 @@ export default function Stalls(): JSX.Element {
               >
                 {active.status === "available" ? "Mark as Reserved" : "Release Stall"}
               </button>
-              <button
-                onClick={() => setActive(null)}
-                className="px-4 py-2 rounded-xl text-sm font-semibold border border-gray-300 hover:bg-gray-50"
-              >
+              <button onClick={() => setActive(null)} className="px-4 py-2 rounded-xl text-sm font-semibold border border-gray-300 hover:bg-gray-50">
                 Close
               </button>
             </div>
@@ -437,81 +386,4 @@ export default function Stalls(): JSX.Element {
       )}
     </div>
   );
-}   
-
-      
-      
-    
-  
-/*
-=====================================
-TESTS (Vitest + React Testing Library)
-=====================================
-
-Create a file: src/pages/Stalls.test.tsx
-
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Stalls from './Stalls';
-
-// Minimal mock for clipboard
-Object.assign(navigator, { clipboard: { writeText: vi.fn() } });
-
-// Helper to render component (no Router required)
-const setup = () => render(<Stalls />);
-
-describe('Stalls Dashboard', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
-  it('renders loading then stalls grid', async () => {
-    setup();
-    expect(screen.getByText(/Loading stalls…/i)).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByText('Stall A1')).toBeInTheDocument());
-  });
-
-  it('filters by Available tab', async () => {
-    setup();
-    await waitFor(() => screen.getByText('Stall A1'));
-    fireEvent.click(screen.getByRole('button', { name: 'Available' }));
-    // A reserved stall should not be visible when "Available" is active
-    expect(screen.queryByText('Stall A3')).not.toBeInTheDocument();
-  });
-
-  it('searches by ID', async () => {
-    setup();
-    await waitFor(() => screen.getByText('Stall A1'));
-    fireEvent.change(screen.getByPlaceholderText(/Search by stall name or ID/i), { target: { value: 'S-003' } });
-    expect(screen.getByText('Stall A3')).toBeInTheDocument();
-  });
-
-  it('opens drawer and shows reserver details for reserved stall', async () => {
-    setup();
-    await waitFor(() => screen.getByText('Stall A3'));
-    fireEvent.click(screen.getByText('Stall A3'));
-    expect(await screen.findByText(/Reserver Details/i)).toBeInTheDocument();
-    expect(screen.getByText('U-99120')).toBeInTheDocument();
-  });
-
-  it('toggles status from available → reserved', async () => {
-    setup();
-    await waitFor(() => screen.getByText('Stall A1'));
-    fireEvent.click(screen.getByText('Stall A1'));
-    const btn = await screen.findByRole('button', { name: 'Mark as Reserved' });
-    fireEvent.click(btn);
-    // Button text should flip after toggle
-    await screen.findByRole('button', { name: 'Release Stall' });
-  });
-
-  it('navigation fallbacks do not throw without Router', async () => {
-    // Ensure Back and Settings buttons exist and can be clicked without throwing
-    setup();
-    await waitFor(() => screen.getByText('Stall A1'));
-    fireEvent.click(screen.getByRole('button', { name: '← Back' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    expect(true).toBe(true);
-  });
-});
-
-*/
+}
