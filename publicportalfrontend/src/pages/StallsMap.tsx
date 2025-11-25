@@ -136,12 +136,9 @@ const StallsMap: React.FC = () => {
             <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer" onClick={() => navigate("/stalls-map")} >
               Stalls
             </button>
-            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer">
-              Bookings
-            </button>
-            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer">
-              Settings
-            </button>
+            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer" onClick={() => navigate("/add-genres")}>
+              Add Genres            </button>
+
           </div>
 
           <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">
@@ -283,7 +280,6 @@ const StallsMap: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Stall Details */}
         <div className="w-full md:w-80 flex-shrink-0 bg-white shadow-xl rounded-2xl p-6 overflow-auto">
           {selectedStall ? (
             <>

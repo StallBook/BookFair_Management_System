@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import logo from "../assets/lg.png";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
-    className?: string; // allow optional className
+  className?: string;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   return (
     <nav
       className={`px-5 pt-2 flex justify-between md:justify-around items-center relative shadow pb-2 bg-gray-800 text-white ${className}`}
     >
-      {/* Logo */}
-      <img className="w-40 h-12 object-contain" src={logo} alt="Logo" />
+      <img className="w-40 h-12 object-contain cursor-pointer" src={logo} alt="Logo" onClick={() => navigate("/")} />
 
-      {/* Mobile Menu Button */}
       <button
         onClick={() => setOpen(!open)}
         className="md:hidden focus:outline-none text-white"
@@ -60,7 +61,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
         </a>
         {/* <a className="hover:text-teal-400 hover:underline" href="/services">Services</a> */}
         {/* <a className="hover:text-teal-400 hover:underline" href="/project">Project</a> */}
-        <a className="hover:text-blue-400 hover:underline" href="/about-us">
+        <a className="hover:text-blue-400 hover:underline" href="/about">
           About us
         </a>
       </div>
@@ -89,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
           </a>
           {/* <a className="hover:text-teal-400 hover:underline" href="/services">Services</a> */}
           {/* <a className="hover:text-teal-400 hover:underline" href="/project">Project</a> */}
-          <a className="hover:text-blue-400 hover:underline" href="/about-us">
+          <a className="hover:text-blue-400 hover:underline" href="/about">
             About us
           </a>
           <a
