@@ -1,4 +1,4 @@
-stallDb.js
+// Config/stallDb.js
 const mongoose = require('mongoose');
 
 let stallConn = null;

@@ -1,4 +1,4 @@
-//reservationDb.js
+// Config/reservationDb.js
 const mongoose = require('mongoose');
 
 let reservationConn = null;
