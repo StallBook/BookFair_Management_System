@@ -23,8 +23,6 @@ interface Stall {
   status: Status;
   reservedBy?: User | null;
   reservedAt?: string | null;
-  notes?: string | null;
-  business?: {} | null;
 }
 
 interface ReservationStall {
@@ -99,7 +97,7 @@ function StallCard({
       {stall.status === "reserved" ? (
         <div className="mt-3 text-xs text-gray-700">
           <span className="font-medium">Reserved by:</span>{" "}
-          {stall?.reservedBy?.name}
+          {stall?.reservedBy?.email}
         </div>
       ) : (
         <div className="mt-3 text-xs text-gray-700">
@@ -164,7 +162,6 @@ export default function Stalls(): JSX.Element {
             phone: res.userPhone,
             organization: res.userOrganization,
             reservedAt: res.createdAt,
-            business: res.userOrganization,
           };
         });
       });
@@ -174,10 +171,9 @@ export default function Stalls(): JSX.Element {
         const reservedBy = reservedMap[stall.name] || null;
         return {
           ...stall,
-          status: reservedBy ? "reserved" : "available",
+          status: (reservedBy ? "reserved" : "available") as Status,
           reservedBy,
           reservedAt: reservedBy?.reservedAt,
-          notes: reservedBy?.notes,
         };
       });
 
@@ -246,13 +242,7 @@ export default function Stalls(): JSX.Element {
               className="text-sm text-gray-800 fontweight-medium font-semibold hover:text-black px-3 py-1.5 rounded-lg hover:bg-gray-100"
               onClick={goBack}
             >
-              ← Back
-            </button>
-            <button
-              className="text-sm text-white bg-black hover:bg-gray-800 rounded-lg px-3 py-1.5"
-              onClick={goSettings}
-            >
-              Settings
+              ← Sign Out
             </button>
           </div>
         </div>
@@ -335,7 +325,6 @@ export default function Stalls(): JSX.Element {
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-xl font-semibold">{active.name}</h2>
-                <p className="text-xs text-gray-500 mt-0.5">ID: {active.id}</p>
               </div>
               <StatusBadge status={active.status} />
             </div>
@@ -344,12 +333,6 @@ export default function Stalls(): JSX.Element {
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-xs text-gray-500">Size</div>
                 <div className="font-medium">{active.size || "—"}</div>
-              </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-xs text-gray-500">Price / day</div>
-                <div className="font-medium">
-                  LKR {active.pricePerDay?.toLocaleString?.() || "—"}
-                </div>
               </div>
             </div>
 
@@ -361,10 +344,7 @@ export default function Stalls(): JSX.Element {
                     <div className="text-gray-600">User ID</div>
                     <div className="font-mono">{active.reservedBy?.id}</div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="text-gray-600">Name</div>
-                    <div>{active.reservedBy?.name}</div>
-                  </div>
+
                   <div className="flex items-center justify-between">
                     <div className="text-gray-600">Email</div>
                     <a
@@ -374,15 +354,7 @@ export default function Stalls(): JSX.Element {
                       {active.reservedBy?.email}
                     </a>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="text-gray-600">Phone</div>
-                    <a
-                      className="underline"
-                      href={`tel:${active.reservedBy?.phone}`}
-                    >
-                      {active.reservedBy?.phone}
-                    </a>
-                  </div>
+
                   {active.reservedBy?.organization && (
                     <div className="flex items-center justify-between">
                       <div className="text-gray-600">Organization</div>
@@ -395,12 +367,6 @@ export default function Stalls(): JSX.Element {
                       <div>{new Date(active.reservedAt).toLocaleString()}</div>
                     </div>
                   )}
-                  {active.notes && (
-                    <div className="pt-2">
-                      <div className="text-xs text-gray-500">Notes</div>
-                      <div className="text-sm">{active.notes}</div>
-                    </div>
-                  )}
                 </div>
 
                 <div className="mt-4 flex gap-2">
@@ -410,12 +376,6 @@ export default function Stalls(): JSX.Element {
                   >
                     Copy User ID
                   </button>
-                  <a
-                    href={`mailto:${active.reservedBy?.email}?subject=Your%20Bookfair%20Stall%20Reservation%20(${active.name})`}
-                    className="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-black"
-                  >
-                    Email User
-                  </a>
                 </div>
               </div>
             ) : (
@@ -426,18 +386,6 @@ export default function Stalls(): JSX.Element {
             )}
 
             <div className="mt-8 flex items-center gap-2">
-              <button
-                onClick={toggleStatus(active)}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold ${
-                  active.status === "available"
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-green-600 text-white hover:bg-green-700"
-                }`}
-              >
-                {active.status === "available"
-                  ? "Mark as Reserved"
-                  : "Release Stall"}
-              </button>
               <button
                 onClick={() => setActive(null)}
                 className="px-4 py-2 rounded-xl text-sm font-semibold border border-gray-300 hover:bg-gray-50"
