@@ -63,8 +63,8 @@ const StallsMap: React.FC = () => {
 
   const mapBoundaries = useMemo(() => {
     if (stalls.length === 0) return { maxX: 50, maxY: 50 };
-    const maxX = Math.max(...stalls.map(s => s.map.x + s.map.w)) + 2;
-    const maxY = Math.max(...stalls.map(s => s.map.y + s.map.h)) + 2;
+    const maxX = Math.max(...stalls.map((s) => s.map.x + s.map.w)) + 2;
+    const maxY = Math.max(...stalls.map((s) => s.map.y + s.map.h)) + 2;
     return { maxX, maxY };
   }, [stalls]);
 
@@ -76,6 +76,7 @@ const StallsMap: React.FC = () => {
     if (!selectedStall) return;
     try {
       const token = localStorage.getItem("token");
+      console.log("Token:", token);
       if (!token) {
         toast.error("Please login first");
         return;
@@ -85,8 +86,9 @@ const StallsMap: React.FC = () => {
         toast.success(
           ` Reservation confirmed for stall ${selectedStall.name}!`
         );
+        toast.success(`QR code generated and Email sent to you!`);
         setShowModal(false);
-        navigate("/add-genres");
+        navigate("/");
         await fetchStalls();
         setSelectedStall(null);
       } else {
@@ -133,7 +135,10 @@ const StallsMap: React.FC = () => {
             >
               Dashboard
             </button>
-            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer" onClick={() => navigate("/stalls-map")} >
+            <button
+              className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
+              onClick={() => navigate("/stalls-map")}
+            >
               Stalls
             </button>
             <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer" onClick={() => navigate("/add-genres")}>
@@ -210,25 +215,29 @@ const StallsMap: React.FC = () => {
                 width: `${mapBoundaries.maxX * 12}px`,
                 height: `${mapBoundaries.maxY * 12}px`,
                 minWidth: "600px",
-                minHeight: "600px"
+                minHeight: "600px",
               }}
             >
               {/* Grid lines for reference */}
               <div className="absolute inset-0 opacity-10 pointer-events-none">
-                {Array.from({ length: Math.ceil(mapBoundaries.maxX / 5) }).map((_, i) => (
-                  <div
-                    key={`v-${i}`}
-                    className="absolute h-full w-px bg-gray-400"
-                    style={{ left: `${i * 5 * 12}px` }}
-                  />
-                ))}
-                {Array.from({ length: Math.ceil(mapBoundaries.maxY / 5) }).map((_, i) => (
-                  <div
-                    key={`h-${i}`}
-                    className="absolute w-full h-px bg-gray-400"
-                    style={{ top: `${i * 5 * 12}px` }}
-                  />
-                ))}
+                {Array.from({ length: Math.ceil(mapBoundaries.maxX / 5) }).map(
+                  (_, i) => (
+                    <div
+                      key={`v-${i}`}
+                      className="absolute h-full w-px bg-gray-400"
+                      style={{ left: `${i * 5 * 12}px` }}
+                    />
+                  )
+                )}
+                {Array.from({ length: Math.ceil(mapBoundaries.maxY / 5) }).map(
+                  (_, i) => (
+                    <div
+                      key={`h-${i}`}
+                      className="absolute w-full h-px bg-gray-400"
+                      style={{ top: `${i * 5 * 12}px` }}
+                    />
+                  )
+                )}
               </div>
 
               {stalls.map((stall) => (
@@ -238,6 +247,7 @@ const StallsMap: React.FC = () => {
                     stall.status !== "reserved" && setSelectedStall(stall)
                   }
                   className={`absolute border-2 rounded-lg text-center font-semibold flex items-center justify-center transition-all duration-200 shadow-md
+                   
                     ${stall.status === "reserved"
                       ? "bg-gray-400 border-gray-300 cursor-not-allowed opacity-70"
                       : stall.size === "small"
@@ -246,9 +256,10 @@ const StallsMap: React.FC = () => {
                           ? "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
                           : "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
                     }
-                    ${selectedStall?._id === stall._id
-                      ? "ring-4 ring-blue-600 scale-105 z-10"
-                      : ""
+                    ${
+                      selectedStall?._id === stall._id
+                        ? "ring-4 ring-blue-600 scale-105 z-10"
+                        : ""
                     }
                   `}
                   style={{
@@ -260,9 +271,13 @@ const StallsMap: React.FC = () => {
                   title={`${stall.name} - ${stall.size} (${stall.status})`}
                 >
                   <div className="flex flex-col items-center">
-                    <span className="text-xs sm:text-sm font-bold">{stall.name}</span>
+                    <span className="text-xs sm:text-sm font-bold">
+                      {stall.name}
+                    </span>
                     {stall.status === "reserved" && (
-                      <span className="text-[8px] sm:text-xs text-red-700 font-semibold">Reserved</span>
+                      <span className="text-[8px] sm:text-xs text-red-700 font-semibold">
+                        Reserved
+                      </span>
                     )}
                   </div>
                 </div>
@@ -307,9 +322,10 @@ const StallsMap: React.FC = () => {
               <button
                 onClick={handleBookClick}
                 className={`w-full mt-6 py-2 rounded-lg font-semibold transition 
-                  ${selectedStall.status === "available"
-                    ? "bg-blue-600 hover:bg-blue-700 text-white"
-                    : "bg-gray-400 cursor-not-allowed"
+                  ${
+                    selectedStall.status === "available"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-400 cursor-not-allowed"
                   }`}
                 disabled={selectedStall.status !== "available"}
               >

@@ -9,7 +9,10 @@ export const signUp = async (name, email, password) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({ name, email, password: hashedPassword });
-    return newUser;
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+        expiresIn: '1h',
+    })
+    return { token, newUser };
 
 };
 
