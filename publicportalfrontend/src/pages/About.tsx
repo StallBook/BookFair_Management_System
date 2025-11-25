@@ -72,7 +72,7 @@ const About = () => {
                 {/* RIGHT SIDE: 3 MOTION CARDS */}
                 <div className="flex flex-col gap-6">
                     <motion.div
-                        className="p-6 rounded-xl shadow-lg bg-white border"
+                        className="p-6 rounded-xl shadow-lg bg-blue-100 border"
                         variants={cardVariant}
                         initial="hidden"
                         animate="visible"
@@ -85,7 +85,7 @@ const About = () => {
                     </motion.div>
 
                     <motion.div
-                        className="p-6 rounded-xl shadow-lg bg-white border"
+                        className="p-6 rounded-xl shadow-lg bg-blue-100 border"
                         variants={cardVariant}
                         initial="hidden"
                         animate="visible"
@@ -98,7 +98,7 @@ const About = () => {
                     </motion.div>
 
                     <motion.div
-                        className="p-6 rounded-xl shadow-lg bg-white border"
+                        className="p-6 rounded-xl shadow-lg bg-blue-100 border"
                         variants={cardVariant}
                         initial="hidden"
                         animate="visible"
