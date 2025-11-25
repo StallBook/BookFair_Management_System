@@ -3,8 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { JSX } from "react";
 import bg from "../assets/bg1.png";
 import { message } from "antd";
-import { api } from "../lib/api"; // axios instance - must exist
-
+import { api } from "../lib/api"; 
 
 export type Status = "available" | "reserved";
 
@@ -24,6 +23,7 @@ export interface Stall {
   pricePerDay?: number;
   reservedAt?: string; // ISO
   reservedBy?: ReservedBy | null;
+  business?: [] | String;
   notes?: string;
 }
 

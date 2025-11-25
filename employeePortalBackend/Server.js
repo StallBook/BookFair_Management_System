@@ -30,7 +30,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/stalls', stallsRoutes);
 
-// Healthcheck (optional)
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
 const PORT = process.env.PORT || 5000;
