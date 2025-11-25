@@ -2,9 +2,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { JSX } from "react";
 import bg from "../assets/bg1.png";
-import { message } from "antd";
+import { message, Modal } from "antd";
 import { api } from "../lib/api"; // axios instance - must exist
-
+// If you don't use antd, remove message/Modal and replace with alerts.
 
 export type Status = "available" | "reserved";
 
