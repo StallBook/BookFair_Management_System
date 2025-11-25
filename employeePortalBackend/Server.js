@@ -2,6 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./Config/db');            // your db.js
+const { connectStallDB } = require('./Config/stallDb');
+const { connectReservationDB } = require('./Config/reservationDb');
+const stallsRoutes = require('./routes/stallsRoutes');
 const authRoutes = require('./routes/authRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 
@@ -17,10 +20,15 @@ app.use(express.json());
 
 // DB
 connectDB();
+// connect optional service DBs (async, but non-blocking)
+connectStallDB().catch(err => console.error('Stall DB connect error', err));
+connectReservationDB().catch(err => console.error('Reservation DB connect error', err));
+
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
+app.use('/api/stalls', stallsRoutes);
 
 // Healthcheck (optional)
 app.get('/health', (_req, res) => res.json({ ok: true }));
