@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import logo from "../assets/lg.png";
 
 interface NavbarProps {
-    className?: string; // allow optional className
+  className?: string; // allow optional className
 }
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const [open, setOpen] = useState(false);
-
+  const token = localStorage.getItem("token");
   return (
     <nav
       className={`px-5 pt-2 flex justify-between md:justify-around items-center relative shadow pb-2 bg-gray-800 text-white ${className}`}
@@ -73,12 +73,22 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
         >
           Book Now
         </a>
-        <a
-          className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
-          href="/signup"
-        >
-          Sign Up
-        </a>
+        {token && (
+          <a
+            className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
+            href="/add-genres"
+          >
+            Add Generes
+          </a>
+        )}
+        {!token && (
+          <a
+            className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
+            href="/signup"
+          >
+            Sign Up
+          </a>
+        )}
       </div>
 
       {/* Mobile Menu */}
@@ -98,12 +108,22 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
           >
             Book Now
           </a>
-          <a
-            className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
-            href="/talk"
-          >
-            Sign Up
-          </a>
+          {token && (
+            <a
+              className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
+              href="/add-genres"
+            >
+              Add Genres
+            </a>
+          )}
+          {!token && (
+            <a
+              className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
+              href="/talk"
+            >
+              Sign Up
+            </a>
+          )}
         </div>
       )}
     </nav>
