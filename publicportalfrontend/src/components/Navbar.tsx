@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import logo from "../assets/lg.png";
 
 interface NavbarProps {
-    className?: string; // allow optional className
+  className?: string; // allow optional className
 }
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
@@ -89,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
           </a>
           {/* <a className="hover:text-teal-400 hover:underline" href="/services">Services</a> */}
           {/* <a className="hover:text-teal-400 hover:underline" href="/project">Project</a> */}
-          <a className="hover:text-blue-400 hover:underline" href="/about-us">
+          <a className="hover:text-blue-400 hover:underline" href="/about">
             About us
           </a>
           <a
