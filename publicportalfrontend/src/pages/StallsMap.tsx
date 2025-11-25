@@ -166,24 +166,24 @@ const StallsMap: React.FC = () => {
       {/* Main Area */}
       <main className="flex-1 flex flex-col md:flex-row overflow-auto p-4 md:p-6 mt-14 md:mt-0 gap-6">
         {/* Left Column: Map and Stats */}
-        <div className="flex-1 flex flex-col gap-4">
+        <div className="flex-1 flex flex-col gap-2">
           {/* Stats */}
           <div className="text-2xl font-bold mb-2 text-center">
             Book Fair Stalls Map
           </div>
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-row justify-around items-center">
             <div className="flex flex-wrap justify-around gap-4 mb-4">
-              <div className="w-36 h-20 bg-slate-400 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
+              <div className="w-36 h-12 bg-slate-200 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
                 <h3 className="font-semibold">Total Stalls</h3>
                 <span className="text-xl font-bold">{stalls.length}</span>
               </div>
-              <div className="w-36 h-20 bg-green-400 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
+              <div className="w-36 h-12 bg-green-200 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
                 <h3 className="font-semibold">Available</h3>
                 <span className="text-xl font-bold">
                   {stalls.filter((s) => s.status === "available").length}
                 </span>
               </div>
-              <div className="w-36 h-20 bg-red-400 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
+              <div className="w-36 h-12 bg-red-200 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
                 <h3 className="font-semibold">Reserved</h3>
                 <span className="text-xl font-bold">
                   {stalls.filter((s) => s.status === "reserved").length}
