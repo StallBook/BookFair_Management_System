@@ -27,6 +27,7 @@ const RegisterBusiness = () => {
   });
   const [errors, setErrors] = useState<any>({});
   const userID = Number(localStorage.getItem("userID"));
+  console.log("userID:", userID);
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
