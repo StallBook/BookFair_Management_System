@@ -193,19 +193,19 @@ const StallsMap: React.FC = () => {
           {/* Legend */}
           <div className="flex flex-wrap justify-center gap-4 mb-4 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-300 border-2 border-blue-500 rounded"></div>
-              <span>Small</span>
+              <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
+              <span>available Stalls</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-green-300 border-2 border-green-500 rounded"></div>
+            {/* <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
               <span>Medium</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-yellow-300 border-2 border-yellow-500 rounded"></div>
+              <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
               <span>Large</span>
-            </div>
+            </div> */}
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-red-200 border-2 border-red-400 rounded"></div>
+              <div className="w-6 h-6 bg-gray-200 border-2 border-gray-400 rounded"></div>
               <span>Reserved</span>
             </div>
           </div>
@@ -248,12 +248,12 @@ const StallsMap: React.FC = () => {
                   }
                   className={`absolute border-2 rounded-lg text-center font-semibold flex items-center justify-center transition-all duration-200 shadow-md
                     ${stall.status === "reserved"
-                      ? "bg-red-200 border-red-400 cursor-not-allowed opacity-70"
+                      ? "bg-gray-400 border-gray-300 cursor-not-allowed opacity-70"
                       : stall.size === "small"
-                        ? "bg-blue-300 border-blue-500 hover:bg-blue-400 cursor-pointer"
+                        ? "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
                         : stall.size === "medium"
-                          ? "bg-green-300 border-green-500 hover:bg-green-400 cursor-pointer"
-                          : "bg-yellow-300 border-yellow-500 hover:bg-yellow-400 cursor-pointer"
+                          ? "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
+                          : "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
                     }
                     ${selectedStall?._id === stall._id
                       ? "ring-4 ring-blue-600 scale-105 z-10"
