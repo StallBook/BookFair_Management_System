@@ -76,7 +76,6 @@ const StallsMap: React.FC = () => {
     if (!selectedStall) return;
     try {
       const token = localStorage.getItem("token");
-      console.log("Token:", token);
       if (!token) {
         toast.error("Please login first");
         return;
@@ -141,7 +140,6 @@ const StallsMap: React.FC = () => {
             >
               Stalls
             </button>
-
           </div>
 
           <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">
@@ -204,7 +202,6 @@ const StallsMap: React.FC = () => {
             </div>
           </div>
 
-
           {/* Map */}
           <div className="flex justify-center items-start overflow-auto">
             <div
@@ -246,17 +243,19 @@ const StallsMap: React.FC = () => {
                   }
                   className={`absolute border-2 rounded-lg text-center font-semibold flex items-center justify-center transition-all duration-200 shadow-md
                    
-                    ${stall.status === "reserved"
-                      ? "bg-gray-400 border-gray-300 cursor-not-allowed opacity-70"
-                      : stall.size === "small"
+                    ${
+                      stall.status === "reserved"
+                        ? "bg-gray-400 border-gray-300 cursor-not-allowed opacity-70"
+                        : stall.size === "small"
                         ? "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
                         : stall.size === "medium"
-                          ? "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
-                          : "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
+                        ? "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
+                        : "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
                     }
-                    ${selectedStall?._id === stall._id
-                      ? "ring-4 ring-blue-600 scale-105 z-10"
-                      : ""
+                    ${
+                      selectedStall?._id === stall._id
+                        ? "ring-4 ring-blue-600 scale-105 z-10"
+                        : ""
                     }
                   `}
                   style={{
@@ -287,16 +286,19 @@ const StallsMap: React.FC = () => {
           {selectedStall ? (
             <>
               <div className="m-1 rounded-md shadow-md p-2 bg-blue-100 border border-blue-300">
-                <h2 className="text-xl font-bold mb-4 p-2 rounded"><span>Stall Name: {selectedStall.name}</span></h2>
+                <h2 className="text-xl font-bold mb-4 p-2 rounded">
+                  <span>Stall Name: {selectedStall.name}</span>
+                </h2>
                 <p className="text-gray-700 mb-2">
                   <span className="font-semibold">Size:</span>{" "}
                   <label
-                    className={`p-2 rounded ${selectedStall.size === "small"
-                      ? "bg-green-200"
-                      : selectedStall.size === "medium"
+                    className={`p-2 rounded ${
+                      selectedStall.size === "small"
+                        ? "bg-green-200"
+                        : selectedStall.size === "medium"
                         ? "bg-yellow-200"
                         : "bg-red-200"
-                      }`}
+                    }`}
                   >
                     {selectedStall.size.toUpperCase()}
                   </label>
@@ -319,9 +321,10 @@ const StallsMap: React.FC = () => {
               <button
                 onClick={handleBookClick}
                 className={`w-full mt-6 py-2 rounded-lg font-semibold transition 
-                  ${selectedStall.status === "available"
-                    ? "bg-blue-600 hover:bg-blue-700 text-white"
-                    : "bg-gray-400 cursor-not-allowed"
+                  ${
+                    selectedStall.status === "available"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-400 cursor-not-allowed"
                   }`}
                 disabled={selectedStall.status !== "available"}
               >

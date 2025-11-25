@@ -50,7 +50,6 @@ const Signup = () => {
       } else {
         toast.error(response.error || "Registration failed. Try again!");
       }
-      console.log("Signup response:", response);
     } catch (error) {
       toast.error("Something went wrong. Please try again later.");
       console.error(error);
@@ -112,10 +111,11 @@ const Signup = () => {
             <input
               type="text"
               placeholder="Username"
-              className={`p-3 rounded-lg border ${errors.username
-                ? "border-red-400 focus:ring-red-500"
-                : "border-blue-300 focus:ring-blue-500"
-                } focus:outline-none focus:ring-2 w-full`}
+              className={`p-3 rounded-lg border ${
+                errors.username
+                  ? "border-red-400 focus:ring-red-500"
+                  : "border-blue-300 focus:ring-blue-500"
+              } focus:outline-none focus:ring-2 w-full`}
               name="username"
               value={formValues.username}
               onChange={handleChange}
@@ -126,10 +126,11 @@ const Signup = () => {
             <input
               type="email"
               placeholder="Email"
-              className={`p-3 rounded-lg border ${errors.email
-                ? "border-red-400 focus:ring-red-500"
-                : "border-blue-300 focus:ring-blue-500"
-                } focus:outline-none focus:ring-2 w-full`}
+              className={`p-3 rounded-lg border ${
+                errors.email
+                  ? "border-red-400 focus:ring-red-500"
+                  : "border-blue-300 focus:ring-blue-500"
+              } focus:outline-none focus:ring-2 w-full`}
               name="email"
               value={formValues.email}
               onChange={handleChange}
@@ -140,10 +141,11 @@ const Signup = () => {
             <input
               type="password"
               placeholder="Password"
-              className={`p-3 rounded-lg border ${errors.password
-                ? "border-red-400 focus:ring-red-500"
-                : "border-blue-300 focus:ring-blue-500"
-                } focus:outline-none focus:ring-2 w-full`}
+              className={`p-3 rounded-lg border ${
+                errors.password
+                  ? "border-red-400 focus:ring-red-500"
+                  : "border-blue-300 focus:ring-blue-500"
+              } focus:outline-none focus:ring-2 w-full`}
               name="password"
               value={formValues.password}
               onChange={handleChange}
@@ -155,10 +157,11 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`${loading
-              ? "bg-blue-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
-              } w-full text-white font-semibold py-3 rounded-lg transition-all mt-2`}
+            className={`${
+              loading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            } w-full text-white font-semibold py-3 rounded-lg transition-all mt-2`}
           >
             {loading ? "Signing Up..." : "Sign Up"}
           </button>

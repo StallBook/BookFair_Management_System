@@ -27,7 +27,6 @@ const RegisterBusiness = () => {
   });
   const [errors, setErrors] = useState<any>({});
   const userID = Number(localStorage.getItem("userID"));
-  console.log("userID:", userID);
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
@@ -47,7 +46,6 @@ const RegisterBusiness = () => {
       } else {
         toast.error(response.error || "Registration failed. Try again!");
       }
-      console.log("response:", response);
     } catch (error) {
       toast.error("Something went wrong. Please try again later.");
       console.error(error);

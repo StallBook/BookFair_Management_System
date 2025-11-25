@@ -31,12 +31,10 @@ const Signin = () => {
         password: values.password,
       };
       const response = await userSignInService(data);
-      console.log("Signin Response:", response);
       if (response.message === "success") {
         if (response.token) {
           localStorage.setItem("token", response.token);
         }
-        console.log("response.user:", response.user);
         if (response.user) {
           localStorage.setItem("userID", response.user.userID);
         }
@@ -68,7 +66,6 @@ const Signin = () => {
   };
 
   const googleAuth = () => {
-    console.log("API_URL:", API_URL);
     window.open(`${API_URL}/auth/auth/google`, "_self");
   };
 
@@ -101,10 +98,11 @@ const Signin = () => {
               placeholder="Email"
               name="email"
               value={formValues.email}
-              className={`p-3 rounded-lg border ${errors.email
+              className={`p-3 rounded-lg border ${
+                errors.email
                   ? "border-red-400 focus:ring-red-500"
                   : "border-blue-300 focus:ring-blue-500"
-                } focus:outline-none focus:ring-2 w-full`}
+              } focus:outline-none focus:ring-2 w-full`}
               onChange={(e) => {
                 const { name, value } = e.target;
                 setFormValues({ ...formValues, [name]: value });
@@ -130,10 +128,11 @@ const Signin = () => {
                   [name]: validateSimpleField(name, value),
                 });
               }}
-              className={`p-3 rounded-lg border ${errors.password
+              className={`p-3 rounded-lg border ${
+                errors.password
                   ? "border-red-400 focus:ring-red-500"
                   : "border-blue-300 focus:ring-blue-500"
-                } focus:outline-none focus:ring-2 w-full`}
+              } focus:outline-none focus:ring-2 w-full`}
             />
             {renderError(errors.password)}
           </div>
@@ -141,10 +140,11 @@ const Signin = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`${loading
+            className={`${
+              loading
                 ? "bg-blue-400 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700"
-              } w-full text-white font-semibold py-3 rounded-lg transition-all mt-2`}
+            } w-full text-white font-semibold py-3 rounded-lg transition-all mt-2`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>

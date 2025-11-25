@@ -195,10 +195,7 @@ export default function Stalls(): JSX.Element {
   const filtered = stalls.filter((stall) => {
     if (tab !== "all" && stall.status !== tab) return false;
     if (!query) return true;
-    return (
-      stall.name.toLowerCase().includes(query.toLowerCase()) ||
-      stall.id.toLowerCase().includes(query.toLowerCase())
-    );
+    return stall.name.includes(query);
   });
 
   // -------------------- Helpers --------------------

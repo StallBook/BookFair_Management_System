@@ -104,7 +104,6 @@ const AddGenres = () => {
   const fetchGenreDetail = async () => {
     try {
       const response = await getGenreDetailService({ userID: Number(userID) });
-      console.log("Genre Detail Response:", response);
 
       if (response.message === "success") {
         const genres = Array.isArray(response.genres) ? response.genres : [];
@@ -180,7 +179,6 @@ const AddGenres = () => {
             >
               Stalls
             </button>
-
           </div>
 
           <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">

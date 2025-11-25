@@ -1,17 +1,17 @@
-import bg from '../assets/bg1.png';
+import bg from "../assets/bg1.png";
 import React, { useMemo, useState } from "react";
 import { Typography, Input, Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import logo from '../assets/lg.png';
-import axios from 'axios';
+import logo from "../assets/lg.png";
+import axios from "axios";
 
 const { Title, Text } = Typography;
 
 // Vite style env (use REACT_APP_API_BASE for CRA)
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 // at least 8 chars, 1 uppercase, 1 lowercase, 1 number
 
 const validateName = (name: string) => {
@@ -26,7 +26,8 @@ const validateEmail = (email: string) => {
 };
 const validatePassword = (password: string) => {
   if (!password) return "Password is required";
-  if (!passwordRegex.test(password)) return "Password must be 8+ chars and include uppercase, lowercase and a number";
+  if (!passwordRegex.test(password))
+    return "Password must be 8+ chars and include uppercase, lowercase and a number";
   return "";
 };
 
@@ -61,9 +62,13 @@ const Signup: React.FC = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(`${API_BASE}/api/auth/register`, { name, email, password }, {
-        headers: { 'Content-Type': 'application/json' }
-      });
+      const res = await axios.post(
+        `${API_BASE}/api/auth/register`,
+        { name, email, password },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       // Prefer API message if provided
       const successMsg = res?.data?.msg || "Signup successful! Please sign in.";
@@ -71,16 +76,19 @@ const Signup: React.FC = () => {
       navigate("/signin");
     } catch (err: any) {
       // API message fallback
-      const apiMsg = err?.response?.data?.msg || err?.response?.data?.error || null;
+      const apiMsg =
+        err?.response?.data?.msg || err?.response?.data?.error || null;
 
       // If backend provided field-level errors (common shape: { errors: [{ param, msg }, ...] })
-      const fieldErrors: Array<{ param?: string; msg?: string }> = err?.response?.data?.errors || [];
+      const fieldErrors: Array<{ param?: string; msg?: string }> =
+        err?.response?.data?.errors || [];
 
       if (fieldErrors.length) {
         fieldErrors.forEach((fe) => {
           const param = fe.param?.toString?.().toLowerCase?.();
           const text = fe.msg || "";
-          if (param === "name" || param === "fullname") setServerNameError(text);
+          if (param === "name" || param === "fullname")
+            setServerNameError(text);
           if (param === "email") setServerEmailError(text);
           if (param === "password") setServerPasswordError(text);
         });
@@ -116,7 +124,7 @@ const Signup: React.FC = () => {
             color: "black",
             marginBottom: 4,
             fontWeight: 600,
-            fontSize: "clamp(20px, 2.4vw, 28px)"
+            fontSize: "clamp(20px, 2.4vw, 28px)",
           }}
         >
           Create your account
@@ -125,7 +133,7 @@ const Signup: React.FC = () => {
           style={{
             color: "rgba(16, 1, 1, 0.7)",
             fontWeight: 500,
-            fontSize: "clamp(12px, 1.6vw, 16px)"
+            fontSize: "clamp(12px, 1.6vw, 16px)",
           }}
         >
           Join the StallBook employee portal
@@ -141,8 +149,16 @@ const Signup: React.FC = () => {
               autoComplete="name"
               status={nameError || serverNameError ? "error" : undefined}
             />
-            {nameError && <Text type="danger" className="text-xs">{nameError}</Text>}
-            {!nameError && serverNameError && <Text type="danger" className="text-xs">{serverNameError}</Text>}
+            {nameError && (
+              <Text type="danger" className="text-xs">
+                {nameError}
+              </Text>
+            )}
+            {!nameError && serverNameError && (
+              <Text type="danger" className="text-xs">
+                {serverNameError}
+              </Text>
+            )}
           </div>
 
           <div>
@@ -155,8 +171,16 @@ const Signup: React.FC = () => {
               autoComplete="email"
               status={emailError || serverEmailError ? "error" : undefined}
             />
-            {emailError && <Text type="danger" className="text-xs">{emailError}</Text>}
-            {!emailError && serverEmailError && <Text type="danger" className="text-xs">{serverEmailError}</Text>}
+            {emailError && (
+              <Text type="danger" className="text-xs">
+                {emailError}
+              </Text>
+            )}
+            {!emailError && serverEmailError && (
+              <Text type="danger" className="text-xs">
+                {serverEmailError}
+              </Text>
+            )}
           </div>
 
           <div>
@@ -166,10 +190,20 @@ const Signup: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
-              status={passwordError || serverPasswordError ? "error" : undefined}
+              status={
+                passwordError || serverPasswordError ? "error" : undefined
+              }
             />
-            {passwordError && <Text type="danger" className="text-xs">{passwordError}</Text>}
-            {!passwordError && serverPasswordError && <Text type="danger" className="text-xs">{serverPasswordError}</Text>}
+            {passwordError && (
+              <Text type="danger" className="text-xs">
+                {passwordError}
+              </Text>
+            )}
+            {!passwordError && serverPasswordError && (
+              <Text type="danger" className="text-xs">
+                {serverPasswordError}
+              </Text>
+            )}
             <Text className="block mt-1 text-xs text-black/60">
               Minimum 8 characters; include uppercase, lowercase and a number.
             </Text>
@@ -177,13 +211,12 @@ const Signup: React.FC = () => {
 
           <Button
             type="primary"
-            loading={loading}
             onClick={handleSubmit}
-            disabled={anyError || loading}
+            disabled={loading} // disable when needed
             className="w-full !bg-black !border-black hover:!bg-black hover:!border-black focus:!bg-black active:!bg-black"
             style={{ fontWeight: 600 }}
           >
-            Sign up
+            {loading ? "Signing up..." : "Sign up"} {/* show text always */}
           </Button>
         </div>
 
@@ -193,7 +226,12 @@ const Signup: React.FC = () => {
           </Text>
           <Button
             type="link"
-            style={{ color: "#e4202dff", padding: 0 ,fontWeight: 600, textDecoration: "underline" }}
+            style={{
+              color: "#e4202dff",
+              padding: 0,
+              fontWeight: 600,
+              textDecoration: "underline",
+            }}
             onClick={() => navigate("/signin")}
           >
             Sign in
