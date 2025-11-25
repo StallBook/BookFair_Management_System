@@ -86,6 +86,7 @@ const StallsMap: React.FC = () => {
           ` Reservation confirmed for stall ${selectedStall.name}!`
         );
         setShowModal(false);
+        navigate("/add-genres");
         await fetchStalls();
         setSelectedStall(null);
       } else {
