@@ -39,12 +39,12 @@ const About = () => {
                     </motion.h1>
 
                     <motion.p
-                        className="text-base md:text-lg text-gray-700 leading-relaxed mb-4"
+                        className="text-base md:text-xl  text-blue-700 leading-relaxed mb-4"
                         variants={fadeUp}
                         custom={0.3}
                     >
                         StallBook is a modern reservation management system built to support
-                        the Colombo International Bookfair — the largest book exhibition in
+                        the Colombo International Bookfair: the largest book exhibition in
                         Sri Lanka.
                     </motion.p>
 
