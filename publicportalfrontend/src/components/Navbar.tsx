@@ -15,7 +15,12 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
     <nav
       className={`px-5 pt-2 flex justify-between md:justify-around items-center relative shadow pb-2 bg-gray-800 text-white ${className}`}
     >
-      <img className="w-40 h-12 object-contain cursor-pointer" src={logo} alt="Logo" onClick={() => navigate("/")} />
+      <img
+        className="w-40 h-12 object-contain cursor-pointer"
+        src={logo}
+        alt="Logo"
+        onClick={() => navigate("/")}
+      />
 
       <button
         onClick={() => setOpen(!open)}
@@ -68,12 +73,14 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
       {/* Desktop Buttons */}
       <div className="hidden md:flex space-x-4">
-        <a
-          className="rounded-xl p-3 bg-blue-400 hover:bg-white hover:text-blue-500 transition"
-          href="/stalls-map"
-        >
-          Book Now
-        </a>
+        {token && (
+          <a
+            className="rounded-xl p-3 bg-blue-400 hover:bg-white hover:text-blue-500 transition"
+            href="/stalls-map"
+          >
+            Book Now
+          </a>
+        )}
         {token && (
           <a
             className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
@@ -103,12 +110,14 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
           <a className="hover:text-blue-400 hover:underline" href="/about">
             About us
           </a>
-          <a
-            className="rounded-xl p-3 bg-blue-500 hover:bg-white hover:text-teal-500 transition"
-            href="/started"
-          >
-            Book Now
-          </a>
+          {token && (
+            <a
+              className="rounded-xl p-3 bg-blue-500 hover:bg-white hover:text-teal-500 transition"
+              href="/started"
+            >
+              Book Now
+            </a>
+          )}
           {token && (
             <a
               className="rounded-xl p-3 border-2 border-white hover:bg-white hover:text-black transition"
