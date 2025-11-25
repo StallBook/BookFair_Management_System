@@ -180,12 +180,7 @@ const AddGenres = () => {
             >
               Stalls
             </button>
-            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
-              Bookings
-            </button>
-            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
-              Settings
-            </button>
+
           </div>
 
           <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">
@@ -214,7 +209,6 @@ const AddGenres = () => {
       <main className="flex-1 flex flex-col p-6 overflow-auto">
         <Banner />
         <div className="flex flex-col md:flex-row gap-4 mt-2">
-          {/* Publisher/Vendor Card */}
           <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
             <h2 className="text-2xl font-bold mb-4">
               Publisher / Vendor Details
