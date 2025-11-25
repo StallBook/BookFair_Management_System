@@ -4,7 +4,7 @@ import { verifyToken } from '../middlewares/authMiddleware.js';
 
 const userRouter = express.Router();
 
-userRouter.get('/allUsers', verifyToken, handleGetAllUsers);
+userRouter.get('/allUsers',  handleGetAllUsers);
 userRouter.get('/:userID', verifyToken, handleGetUserByID);
 
 export default userRouter;

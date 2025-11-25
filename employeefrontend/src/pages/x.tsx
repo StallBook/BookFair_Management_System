@@ -35,14 +35,12 @@ export default function Stalls(): JSX.Element {
   };
 
   const [users, setUsers] = useState<User[]>([]);
-  const[stalls, setStalls] = useState<Stall[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
 
  
  useEffect(() => {
     fetchUsers();
-    fetchStall(); 
   
   }, []);
 
@@ -50,11 +48,6 @@ interface User {
   id: string;
   name: string;
   email: string;
-  // add other user fields here
-}
-interface Stall {
-  id: string;
- 
   // add other user fields here
 }
 
@@ -65,7 +58,7 @@ interface ServerPayload {
 
 const fetchUsers = async (): Promise<User[]> => {
   try {
-    const response = await api.get<ServerPayload>("http://localhost:5000/auth/user/allUsers");
+    const response = await api.get<ServerPayload>("http://localhost:5001/user/allUsers");
 
     // response.data is typed as ServerPayload
     if (response.data.message === "success") {
@@ -77,51 +70,6 @@ const fetchUsers = async (): Promise<User[]> => {
       // handle non-success message from server
       console.warn("Server responded with:", response.data.message);
       setUsers([]); // optional: clear state on non-success
-      return [];
-    }
-  } catch (error) {
-    console.error("Failed to fetch users:", error);
-    setUsers([]); // optional: set empty on error
-    return [];
-  }
-};
-const fetchStall = async (): Promise<Stall[]> => {
-  try {
-    const response = await api.get<ServerPayload>("http://localhost:5000/stalls/stalls/all-stalls");
-
-    // response.data is typed as ServerPayload
-    if (response.data.message === "success") {
-      const stalls = response.data.data;
-      console.log("Fetched users:", stalls);
-      setStalls(stalls); // assuming setUsers is in scope (React state setter)
-      return stalls;
-    } else {
-      // handle non-success message from server
-      console.warn("Server responded with:", response.data.message);
-      setStalls([]); // optional: clear state on non-success
-      return [];
-    }
-  } catch (error) {
-    console.error("Failed to fetch users:", error);
-    setUsers([]); // optional: set empty on error
-    return [];
-  }
-};
-
-const fetchReservation = async (): Promise<Stall[]> => {
-  try {
-    const response = await api.get<ServerPayload>("http://localhost:5000/stalls/stalls/all-stalls");
-
-    // response.data is typed as ServerPayload
-    if (response.data.message === "success") {
-      const stalls = response.data.data;
-      console.log("Fetched users:", stalls);
-      setStalls(stalls); // assuming setUsers is in scope (React state setter)
-      return stalls;
-    } else {
-      // handle non-success message from server
-      console.warn("Server responded with:", response.data.message);
-      setStalls([]); // optional: clear state on non-success
       return [];
     }
   } catch (error) {

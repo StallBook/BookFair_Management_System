@@ -5,7 +5,8 @@ export const handleGetAllUsers = async (req, res) => {
 
     try {
         const users = await getAllUsers();
-        res.status(200).json(users);
+        console.log(users);
+        return res.status(200).json({ message: "success", users });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
