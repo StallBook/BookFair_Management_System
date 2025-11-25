@@ -136,10 +136,8 @@ const AddGenres = () => {
   const viewBusinessDetails = async () => {
     try {
       const response = await viewBusinessDetailsService(Number(userID));
-      console.log("Business Details Response:", response);
       if (response.message === "success") {
         setBusinessDetails(response.businessDetails);
-        console.log("Business Details:", response.businessDetails);
       } else {
         toast.error(response.error || "Failed to fetch business details.");
       }
@@ -150,7 +148,7 @@ const AddGenres = () => {
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
-       <aside
+      <aside
         className={`bg-gray-800 text-white p-4 md:p-6 transition-all duration-300
     ${menuOpen ? "block" : "hidden"} 
     md:flex md:flex-col md:w-56 fixed md:relative z-50 h-full`}
@@ -176,7 +174,10 @@ const AddGenres = () => {
             >
               Dashboard
             </button>
-            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer" onClick={() => navigate("/stalls-map")} >
+            <button
+              className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
+              onClick={() => navigate("/stalls-map")}
+            >
               Stalls
             </button>
             <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded">
@@ -221,18 +222,18 @@ const AddGenres = () => {
 
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2 text-start">
-               Publication or Bookstore Name
+                Publication or Bookstore Name
               </label>
               <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
-                {businessDetails?.[0]?.businessName || "N/A"}
+                {businessDetails?.businessName || "N/A"}
               </p>
             </div>
-               <div className="mb-4">
+            <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2 text-start">
                 Owner or Representative Name
               </label>
               <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
-                {businessDetails?.[0]?.ownerName || "N/A"}
+                {businessDetails?.ownerName || "N/A"}
               </p>
             </div>
 
@@ -241,7 +242,7 @@ const AddGenres = () => {
                 Contact Number
               </label>
               <p className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-left">
-                {businessDetails?.[0]?.phoneNumber || "N/A"}
+                {businessDetails?.phoneNumber || "N/A"}
               </p>
             </div>
           </div>
