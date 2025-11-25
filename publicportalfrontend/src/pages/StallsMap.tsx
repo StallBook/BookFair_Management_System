@@ -61,6 +61,13 @@ const StallsMap: React.FC = () => {
     }
   };
 
+  const mapBoundaries = useMemo(() => {
+    if (stalls.length === 0) return { maxX: 50, maxY: 50 };
+    const maxX = Math.max(...stalls.map(s => s.map.x + s.map.w)) + 2;
+    const maxY = Math.max(...stalls.map(s => s.map.y + s.map.h)) + 2;
+    return { maxX, maxY };
+  }, [stalls]);
+
   const handleBookClick = () => {
     setShowModal(true);
   };
@@ -76,9 +83,10 @@ const StallsMap: React.FC = () => {
       const res = await createReservationService([selectedStall._id], token);
       if (res.message === "success") {
         toast.success(
-          ` Reservation confirmed for satll ${selectedStall.name}!`
+          ` Reservation confirmed for stall ${selectedStall.name}!`
         );
         setShowModal(false);
+        navigate("/add-genres");
         await fetchStalls();
         setSelectedStall(null);
       } else {
@@ -91,20 +99,6 @@ const StallsMap: React.FC = () => {
       toast.error("Something went wrong while booking. Please try again.");
     }
   };
-  const randomizedStalls = useMemo(() => {
-    const shuffled = [...stalls].sort(() => Math.random() - 0.5);
-    const maxX = 20;
-    const maxY = 20;
-    return shuffled.map((stall) => ({
-      ...stall,
-      map: {
-        x: Math.floor(Math.random() * maxX),
-        y: Math.floor(Math.random() * maxY),
-        w: stall.size === "small" ? 2 : stall.size === "medium" ? 3 : 4,
-        h: stall.size === "small" ? 2 : stall.size === "medium" ? 3 : 4,
-      },
-    }));
-  }, [stalls]);
 
   const handleCancel = () => {
     setShowModal(false);
@@ -180,59 +174,109 @@ const StallsMap: React.FC = () => {
           <div className="text-2xl font-bold mb-2 text-center">
             Book Fair Stalls Map
           </div>
-          <div className="flex flex-wrap justify-around gap-4 mb-2">
-            <div className="w-36 h-20 bg-slate-400 rounded-lg flex flex-col items-center justify-center">
-              <h3>Total Stalls</h3>
-              <span>{stalls.length}</span>
+          <div className="flex flex-wrap justify-around gap-4 mb-4">
+            <div className="w-36 h-20 bg-slate-400 rounded-lg flex flex-col items-center justify-center shadow-md">
+              <h3 className="font-semibold">Total Stalls</h3>
+              <span className="text-xl font-bold">{stalls.length}</span>
             </div>
-            <div className="w-36 h-20 bg-green-400 rounded-lg flex flex-col items-center justify-center">
-              <h3>Available</h3>
-              <span>
+            <div className="w-36 h-20 bg-green-400 rounded-lg flex flex-col items-center justify-center shadow-md">
+              <h3 className="font-semibold">Available</h3>
+              <span className="text-xl font-bold">
                 {stalls.filter((s) => s.status === "available").length}
               </span>
             </div>
-            <div className="w-36 h-20 bg-red-400 rounded-lg flex flex-col items-center justify-center">
-              <h3>Reserved</h3>
-              <span>
+            <div className="w-36 h-20 bg-red-400 rounded-lg flex flex-col items-center justify-center shadow-md">
+              <h3 className="font-semibold">Reserved</h3>
+              <span className="text-xl font-bold">
                 {stalls.filter((s) => s.status === "reserved").length}
               </span>
+            </div>
+          </div>
+
+          {/* Legend */}
+          <div className="flex flex-wrap justify-center gap-4 mb-4 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-blue-300 border-2 border-blue-500 rounded"></div>
+              <span>Small</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-green-300 border-2 border-green-500 rounded"></div>
+              <span>Medium</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-yellow-300 border-2 border-yellow-500 rounded"></div>
+              <span>Large</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-red-200 border-2 border-red-400 rounded"></div>
+              <span>Reserved</span>
             </div>
           </div>
 
           {/* Map */}
           <div className="flex justify-center items-start overflow-auto">
             <div
-              className="relative bg-white shadow-lg rounded-lg p-4 min-w-[300px] max-w-full min-h-[400px] flex-shrink-0"
-              style={{ width: "90%", height: "600px" }}
+              className="relative bg-gradient-to-br from-gray-50 to-gray-100 shadow-lg rounded-lg p-4 border-2 border-gray-300"
+              style={{
+                width: `${mapBoundaries.maxX * 12}px`,
+                height: `${mapBoundaries.maxY * 12}px`,
+                minWidth: "600px",
+                minHeight: "600px"
+              }}
             >
-              {randomizedStalls.map((stall) => (
+              {/* Grid lines for reference */}
+              <div className="absolute inset-0 opacity-10 pointer-events-none">
+                {Array.from({ length: Math.ceil(mapBoundaries.maxX / 5) }).map((_, i) => (
+                  <div
+                    key={`v-${i}`}
+                    className="absolute h-full w-px bg-gray-400"
+                    style={{ left: `${i * 5 * 12}px` }}
+                  />
+                ))}
+                {Array.from({ length: Math.ceil(mapBoundaries.maxY / 5) }).map((_, i) => (
+                  <div
+                    key={`h-${i}`}
+                    className="absolute w-full h-px bg-gray-400"
+                    style={{ top: `${i * 5 * 12}px` }}
+                  />
+                ))}
+              </div>
+
+              {/* Stalls */}
+              {stalls.map((stall) => (
                 <div
-                  key={stall.name}
+                  key={stall._id}
                   onClick={() =>
                     stall.status !== "reserved" && setSelectedStall(stall)
                   }
-                  className={`absolute border border-gray-400 rounded-lg text-center font-semibold flex items-center justify-center cursor-pointer transition-all duration-200
-                    ${
-                      stall.size === "small"
-                        ? "bg-blue-100 hover:bg-blue-200"
+                  className={`absolute border-2 rounded-lg text-center font-semibold flex items-center justify-center transition-all duration-200 shadow-md
+                    ${stall.status === "reserved"
+                      ? "bg-red-200 border-red-400 cursor-not-allowed opacity-70"
+                      : stall.size === "small"
+                        ? "bg-blue-300 border-blue-500 hover:bg-blue-400 cursor-pointer"
                         : stall.size === "medium"
-                        ? "bg-green-100 hover:bg-green-200"
-                        : "bg-yellow-100 hover:bg-yellow-200"
+                          ? "bg-green-300 border-green-500 hover:bg-green-400 cursor-pointer"
+                          : "bg-yellow-300 border-yellow-500 hover:bg-yellow-400 cursor-pointer"
                     }
-                    ${
-                      selectedStall?.name === stall.name
-                        ? "ring-4 ring-blue-400"
-                        : ""
+                    ${selectedStall?._id === stall._id
+                      ? "ring-4 ring-blue-600 scale-105 z-10"
+                      : ""
                     }
                   `}
                   style={{
-                    left: `${stall.map.x * 25}px`,
-                    top: `${stall.map.y * 20}px`,
-                    width: `${stall.map.w * 20}px`,
-                    height: `${stall.map.h * 20}px`,
+                    left: `${stall.map.x * 12}px`,
+                    top: `${stall.map.y * 12}px`,
+                    width: `${stall.map.w * 12}px`,
+                    height: `${stall.map.h * 12}px`,
                   }}
+                  title={`${stall.name} - ${stall.size} (${stall.status})`}
                 >
-                  {stall.name}
+                  <div className="flex flex-col items-center">
+                    <span className="text-xs sm:text-sm font-bold">{stall.name}</span>
+                    {stall.status === "reserved" && (
+                      <span className="text-[8px] sm:text-xs text-red-700 font-semibold">Reserved</span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -263,10 +307,9 @@ const StallsMap: React.FC = () => {
               <button
                 onClick={handleBookClick}
                 className={`w-full mt-6 py-2 rounded-lg font-semibold transition 
-                  ${
-                    selectedStall.status === "available"
-                      ? "bg-blue-600 hover:bg-blue-700 text-white"
-                      : "bg-gray-400 cursor-not-allowed"
+                  ${selectedStall.status === "available"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-gray-400 cursor-not-allowed"
                   }`}
                 disabled={selectedStall.status !== "available"}
               >
