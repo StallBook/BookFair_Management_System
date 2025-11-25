@@ -42,7 +42,7 @@ const RegisterBusiness = () => {
 
       if (response.message === "success") {
         toast.success("Business details added successfully.");
-        setTimeout(() => navigate("/add-genres"), 2000);
+        setTimeout(() => navigate("/stalls-map"), 2000);
       } else {
         toast.error(response.error || "Registration failed. Try again!");
       }
@@ -91,8 +91,7 @@ const RegisterBusiness = () => {
           alt="Logo"
         />
         <h1 className="text-2xl md:text-3xl font-bold text-blue-800 mb-6">
-            Register Your Publication / Bookstore
-
+          Register Your Publication / Bookstore
         </h1>
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
