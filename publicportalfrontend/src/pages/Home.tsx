@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
-import bg from "../assets/bg2.png";
+import bg from "../assets/b1.png";
 import { getAllStalls } from "../services/StallService";
 import { useState, useEffect } from "react";
 
@@ -55,7 +55,6 @@ const Home = () => {
         >
             <Navbar className="w-full" />
 
-            {/* Welcome Section */}
             <motion.div
                 className="text-center mt-12 px-6 md:px-20 lg:px-40"
                 initial="hidden"
@@ -127,7 +126,6 @@ const Home = () => {
             </div> */}
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-48 px-6 md:px-20 lg:px-40 mb-20">
-                {/* Feature 1 */}
                 <motion.div
                     className="bg-white/80 rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all"
                     variants={fadeUp}
@@ -150,7 +148,6 @@ const Home = () => {
                     </p>
                 </motion.div>
 
-                {/* Feature 2 */}
                 <motion.div
                     className="bg-white/80 rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all"
                     variants={fadeUp}
@@ -173,7 +170,6 @@ const Home = () => {
                     </p>
                 </motion.div>
 
-                {/* Feature 3 */}
                 <motion.div
                     className="bg-white/80 rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all"
                     variants={fadeUp}
@@ -216,6 +212,7 @@ const Home = () => {
                         Know what’s happening at the exhibition - all in one glance.
                     </p>
                 </motion.div>
+
             </div>
         </div>
     );
