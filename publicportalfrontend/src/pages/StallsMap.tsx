@@ -163,11 +163,8 @@ const StallsMap: React.FC = () => {
         </button>
       </div>
 
-      {/* Main Area */}
       <main className="flex-1 flex flex-col md:flex-row overflow-auto p-4 md:p-6 mt-14 md:mt-0 gap-6">
-        {/* Left Column: Map and Stats */}
         <div className="flex-1 flex flex-col gap-2">
-          {/* Stats */}
           <div className="text-2xl font-bold mb-2 text-center">
             Book Fair Stalls Map
           </div>
