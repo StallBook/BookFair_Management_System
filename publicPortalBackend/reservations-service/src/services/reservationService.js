@@ -66,6 +66,7 @@ export const createReservation = async ({ authHeader, stallIds }) => {
 
     const userId = user.userID || user._id;
     const userEmail = user.email;
+    const business = user.business || {};
 
     if (!userId) throw new Error("Invalid user profile: missing userId");
 
@@ -124,6 +125,7 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         const reservation = new Reservation({
             userId,
             userEmail,
+            business,
             stalls,
             status: "pending",
         });
@@ -176,6 +178,7 @@ export const createReservation = async ({ authHeader, stallIds }) => {
         }
     }
 };
+
 
 
 export const cancelReservation = async (reservationId, authHeader) => {
