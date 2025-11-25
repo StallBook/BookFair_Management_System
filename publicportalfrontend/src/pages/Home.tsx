@@ -55,7 +55,6 @@ const Home = () => {
         >
             <Navbar className="w-full" />
 
-            {/* Welcome Section */}
             <motion.div
                 className="text-center mt-12 px-6 md:px-20 lg:px-40"
                 initial="hidden"

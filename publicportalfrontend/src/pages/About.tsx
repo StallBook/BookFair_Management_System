@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
+import bg from "../assets/b2.png";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -22,13 +23,12 @@ const cardVariant = {
 
 const About = () => {
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col text-gray-800">
+        <div className="min-h-screen bg-gray-50 flex flex-col bg-cover bg-center text-gray-800" style={{ backgroundImage: `url(${bg})` }}
+        >
             <Navbar />
 
-            {/* MAIN SECTION */}
             <div className="px-6 md:px-20 lg:px-40 mt-24 mb-20 grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
 
-                {/* LEFT SIDE: TEXT */}
                 <motion.div initial="hidden" animate="visible">
                     <motion.h1
                         className="text-3xl md:text-4xl font-bold text-gray-900 mb-6"
