@@ -141,8 +141,12 @@ const StallsMap: React.FC = () => {
             >
               Stalls
             </button>
-            <button className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer" onClick={() => navigate("/add-genres")}>
-              Add Genres            </button>
+            <button
+              className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
+              onClick={() => navigate("/add-genres")}
+            >
+              Add Genres
+            </button>
 
           </div>
 
@@ -256,10 +260,9 @@ const StallsMap: React.FC = () => {
                           ? "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
                           : "bg-blue-100 border-blue-300 hover:bg-blue-400 cursor-pointer"
                     }
-                    ${
-                      selectedStall?._id === stall._id
-                        ? "ring-4 ring-blue-600 scale-105 z-10"
-                        : ""
+                    ${selectedStall?._id === stall._id
+                      ? "ring-4 ring-blue-600 scale-105 z-10"
+                      : ""
                     }
                   `}
                   style={{
@@ -322,10 +325,9 @@ const StallsMap: React.FC = () => {
               <button
                 onClick={handleBookClick}
                 className={`w-full mt-6 py-2 rounded-lg font-semibold transition 
-                  ${
-                    selectedStall.status === "available"
-                      ? "bg-blue-600 hover:bg-blue-700 text-white"
-                      : "bg-gray-400 cursor-not-allowed"
+                  ${selectedStall.status === "available"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-gray-400 cursor-not-allowed"
                   }`}
                 disabled={selectedStall.status !== "available"}
               >

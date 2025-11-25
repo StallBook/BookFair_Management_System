@@ -125,7 +125,7 @@ const Home = () => {
                 </motion.div>
             </div> */}
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-48 px-6 md:px-20 lg:px-40 mb-20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-48 px-6 md:px-20 lg:px-40 mb-20">
                 <motion.div
                     className="bg-white/80 rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all"
                     variants={fadeUp}
@@ -191,7 +191,7 @@ const Home = () => {
                         Know what’s happening at the exhibition - all in one glance.
                     </p>
                 </motion.div>
-                <motion.div
+                {/* <motion.div
                     className="bg-white/80 rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all"
                     variants={fadeUp}
                     custom={0.8}
@@ -211,7 +211,7 @@ const Home = () => {
                     <p className="text-gray-600">
                         Know what’s happening at the exhibition - all in one glance.
                     </p>
-                </motion.div>
+                </motion.div> */}
 
             </div>
         </div>
