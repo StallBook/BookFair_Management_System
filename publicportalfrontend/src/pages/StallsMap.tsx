@@ -171,32 +171,33 @@ const StallsMap: React.FC = () => {
           <div className="text-2xl font-bold mb-2 text-center">
             Book Fair Stalls Map
           </div>
-          <div className="flex flex-wrap justify-around gap-4 mb-4">
-            <div className="w-36 h-20 bg-slate-400 rounded-lg flex flex-col items-center justify-center shadow-md">
-              <h3 className="font-semibold">Total Stalls</h3>
-              <span className="text-xl font-bold">{stalls.length}</span>
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-wrap justify-around gap-4 mb-4">
+              <div className="w-36 h-20 bg-slate-400 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
+                <h3 className="font-semibold">Total Stalls</h3>
+                <span className="text-xl font-bold">{stalls.length}</span>
+              </div>
+              <div className="w-36 h-20 bg-green-400 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
+                <h3 className="font-semibold">Available</h3>
+                <span className="text-xl font-bold">
+                  {stalls.filter((s) => s.status === "available").length}
+                </span>
+              </div>
+              <div className="w-36 h-20 bg-red-400 rounded-lg flex flex-row gap-4 items-center justify-center shadow-md">
+                <h3 className="font-semibold">Reserved</h3>
+                <span className="text-xl font-bold">
+                  {stalls.filter((s) => s.status === "reserved").length}
+                </span>
+              </div>
             </div>
-            <div className="w-36 h-20 bg-green-400 rounded-lg flex flex-col items-center justify-center shadow-md">
-              <h3 className="font-semibold">Available</h3>
-              <span className="text-xl font-bold">
-                {stalls.filter((s) => s.status === "available").length}
-              </span>
-            </div>
-            <div className="w-36 h-20 bg-red-400 rounded-lg flex flex-col items-center justify-center shadow-md">
-              <h3 className="font-semibold">Reserved</h3>
-              <span className="text-xl font-bold">
-                {stalls.filter((s) => s.status === "reserved").length}
-              </span>
-            </div>
-          </div>
 
-          {/* Legend */}
-          <div className="flex flex-wrap justify-center gap-4 mb-4 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
-              <span>available Stalls</span>
-            </div>
-            {/* <div className="flex items-center gap-2">
+            {/* Legend */}
+            <div className="flex flex-wrap flex-col justify-center gap-4 mb-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
+                <span>available Stalls</span>
+              </div>
+              {/* <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
               <span>Medium</span>
             </div>
@@ -204,11 +205,13 @@ const StallsMap: React.FC = () => {
               <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
               <span>Large</span>
             </div> */}
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-gray-200 border-2 border-gray-400 rounded"></div>
-              <span>Reserved</span>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-gray-200 border-2 border-gray-400 rounded"></div>
+                <span>Reserved</span>
+              </div>
             </div>
           </div>
+
 
           {/* Map */}
           <div className="flex justify-center items-start overflow-auto">
@@ -239,7 +242,6 @@ const StallsMap: React.FC = () => {
                 ))}
               </div>
 
-              {/* Stalls */}
               {stalls.map((stall) => (
                 <div
                   key={stall._id}
