@@ -41,7 +41,7 @@ const Signin = () => {
           localStorage.setItem("userID", response.user.userID);
         }
         toast.success("Welcome back! You’ve successfully signed in.");
-        setTimeout(() => navigate("/add-genres"), 2000);
+        setTimeout(() => navigate("/stalls-map"), 2000);
       } else {
         toast.error(response.error || "Signin failed. Try again!");
       }
@@ -101,11 +101,10 @@ const Signin = () => {
               placeholder="Email"
               name="email"
               value={formValues.email}
-              className={`p-3 rounded-lg border ${
-                errors.email
+              className={`p-3 rounded-lg border ${errors.email
                   ? "border-red-400 focus:ring-red-500"
                   : "border-blue-300 focus:ring-blue-500"
-              } focus:outline-none focus:ring-2 w-full`}
+                } focus:outline-none focus:ring-2 w-full`}
               onChange={(e) => {
                 const { name, value } = e.target;
                 setFormValues({ ...formValues, [name]: value });
@@ -131,11 +130,10 @@ const Signin = () => {
                   [name]: validateSimpleField(name, value),
                 });
               }}
-              className={`p-3 rounded-lg border ${
-                errors.password
+              className={`p-3 rounded-lg border ${errors.password
                   ? "border-red-400 focus:ring-red-500"
                   : "border-blue-300 focus:ring-blue-500"
-              } focus:outline-none focus:ring-2 w-full`}
+                } focus:outline-none focus:ring-2 w-full`}
             />
             {renderError(errors.password)}
           </div>
@@ -143,11 +141,10 @@ const Signin = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`${
-              loading
+            className={`${loading
                 ? "bg-blue-400 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700"
-            } w-full text-white font-semibold py-3 rounded-lg transition-all mt-2`}
+              } w-full text-white font-semibold py-3 rounded-lg transition-all mt-2`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>

@@ -61,7 +61,6 @@ const StallsMap: React.FC = () => {
     }
   };
 
-  // Calculate map boundaries based on actual stall positions
   const mapBoundaries = useMemo(() => {
     if (stalls.length === 0) return { maxX: 50, maxY: 50 };
     const maxX = Math.max(...stalls.map(s => s.map.x + s.map.w)) + 2;
@@ -87,6 +86,7 @@ const StallsMap: React.FC = () => {
           ` Reservation confirmed for stall ${selectedStall.name}!`
         );
         setShowModal(false);
+        navigate("/add-genres");
         await fetchStalls();
         setSelectedStall(null);
       } else {
