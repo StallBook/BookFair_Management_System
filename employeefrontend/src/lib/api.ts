@@ -41,7 +41,7 @@ import axios from "axios";
 export const API_BASE =
   (process.env.REACT_APP_API_BASE as string) ||
   (process.env.VITE_API_BASE as string) ||
-  "http://localhost:5000";
+  "http://localhost:5007";
 
 /**
  * Shared axios instance used across the frontend.

@@ -4,7 +4,6 @@ const router = express.Router();
 const { getStallConn, connectStallDB } = require('../Config/stallDb');
 const createStallModel = require('../models/stallModel');
 const mongoose = require('mongoose'); 
-const getUserModel = require('../models/userModel');// default connection (auth DB)
 
 /**
  * Helper: ensure Stall model exists on the stall DB connection.
