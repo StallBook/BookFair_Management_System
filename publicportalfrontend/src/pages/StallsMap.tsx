@@ -141,6 +141,12 @@ const StallsMap: React.FC = () => {
             >
               Stalls
             </button>
+            <button
+              className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded cursor-pointer"
+              onClick={() => navigate("/add-genres")}
+            >
+              Add Genres
+            </button>
 
           </div>
 
