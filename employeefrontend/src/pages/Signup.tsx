@@ -212,11 +212,11 @@ const Signup: React.FC = () => {
           <Button
             type="primary"
             onClick={handleSubmit}
-            disabled={loading} // disable when needed
+            disabled={loading}
             className="w-full !bg-black !border-black hover:!bg-black hover:!border-black focus:!bg-black active:!bg-black"
             style={{ fontWeight: 600 }}
           >
-            {loading ? "Signing up..." : "Sign up"} {/* show text always */}
+            {loading ? "Signing up..." : "Sign up"}
           </Button>
         </div>
 
