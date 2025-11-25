@@ -163,7 +163,7 @@ const StallsMap: React.FC = () => {
         </button>
       </div>
 
-      <main className="flex-1 flex flex-col md:flex-row overflow-auto p-4 md:p-6 mt-14 md:mt-0 gap-6">
+      <main className="flex-1 flex flex-col md:flex-row overflow-auto p-4 md:p-6 mt-14 md:mt-0 gap-6 bg-blue-50">
         <div className="flex-1 flex flex-col gap-2">
           <div className="text-2xl font-bold mb-2 text-center">
             Book Fair Stalls Map
@@ -189,19 +189,11 @@ const StallsMap: React.FC = () => {
             </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap flex-col justify-center gap-4 mb-4 text-sm">
+            <div className="flex flex-wrap flex-row  justify-center gap-4 mb-4 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
                 <span>available Stalls</span>
               </div>
-              {/* <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
-              <span>Medium</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-100 border-2 border-blue-300 rounded"></div>
-              <span>Large</span>
-            </div> */}
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 bg-gray-200 border-2 border-gray-400 rounded"></div>
                 <span>Reserved</span>
@@ -282,23 +274,36 @@ const StallsMap: React.FC = () => {
         <div className="w-full md:w-80 flex-shrink-0 bg-white shadow-xl rounded-2xl p-6 overflow-auto">
           {selectedStall ? (
             <>
-              <h2 className="text-xl font-bold mb-4">{selectedStall.name}</h2>
-              <p className="text-gray-700 mb-2">
-                <span className="font-semibold">Size:</span>{" "}
-                {selectedStall.size.toUpperCase()}
-              </p>
-              <p className="text-gray-700 mb-2">
-                <span className="font-semibold">Dimensions:</span>{" "}
-                {selectedStall.dimensions.width} ×{" "}
-                {selectedStall.dimensions.length} m
-              </p>
-              <p className="text-gray-700 mb-2">
-                <span className="font-semibold">Status:</span>{" "}
-                {selectedStall.status}
-              </p>
-              <p className="text-gray-600 mt-3 text-sm">
-                Location: ({selectedStall.map.x}, {selectedStall.map.y})
-              </p>
+              <div className="m-1 rounded-md shadow-md p-2 bg-blue-100 border border-blue-300">
+                <h2 className="text-xl font-bold mb-4 p-2 rounded"><span>Stall Name: {selectedStall.name}</span></h2>
+                <p className="text-gray-700 mb-2">
+                  <span className="font-semibold">Size:</span>{" "}
+                  <label
+                    className={`p-2 rounded ${selectedStall.size === "small"
+                      ? "bg-green-200"
+                      : selectedStall.size === "medium"
+                        ? "bg-yellow-200"
+                        : "bg-red-200"
+                      }`}
+                  >
+                    {selectedStall.size.toUpperCase()}
+                  </label>
+                </p>
+
+                <p className="text-gray-700 mb-2">
+                  <span className="font-semibold">Dimensions:</span>{" "}
+                  {selectedStall.dimensions.width} ×{" "}
+                  {selectedStall.dimensions.length} m
+                </p>
+                <p className="text-gray-700 mb-2">
+                  <span className="font-semibold">Status:</span>{" "}
+                  {selectedStall.status}
+                </p>
+                <p className="text-gray-600 mt-3 text-sm">
+                  Location: ({selectedStall.map.x}, {selectedStall.map.y})
+                </p>
+              </div>
+
               <button
                 onClick={handleBookClick}
                 className={`w-full mt-6 py-2 rounded-lg font-semibold transition 
