@@ -86,8 +86,9 @@ const StallsMap: React.FC = () => {
         toast.success(
           ` Reservation confirmed for stall ${selectedStall.name}!`
         );
+        toast.success(`QR code generated and Email sent to you!`);
         setShowModal(false);
-        navigate("/add-genres");
+        navigate("/");
         await fetchStalls();
         setSelectedStall(null);
       } else {
