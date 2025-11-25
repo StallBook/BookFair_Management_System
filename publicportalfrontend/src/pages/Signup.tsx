@@ -39,8 +39,14 @@ const Signup = () => {
       const response = await userSignUpService(data);
 
       if (response.message === "success") {
+        if (response.user) {
+          localStorage.setItem("userID", response.user.newUser.userID);
+        }
+        if (response.user.token) {
+          localStorage.setItem("token", response.user.token);
+        }
         toast.success("Welcome! You’ve successfully registered.");
-        setTimeout(() => navigate("/stalls-map"), 2000);
+        setTimeout(() => navigate("/business-details"), 2000);
       } else {
         toast.error(response.error || "Registration failed. Try again!");
       }
